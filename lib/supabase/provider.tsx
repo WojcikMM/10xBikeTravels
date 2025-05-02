@@ -1,20 +1,20 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { Database } from '@/lib/supabase/database.types';
+import { supabase } from './client';
+import { Database } from './database.types';
 
 type SupabaseContext = {
-  supabase: ReturnType<typeof createClientComponentClient<Database>>;
+  supabase: typeof supabase;
 };
 
 const Context = createContext<SupabaseContext | undefined>(undefined);
 
 export function SupabaseProvider({ children }: { children: React.ReactNode }) {
-  const [supabase] = useState(() => createClientComponentClient<Database>());
+  const [client] = useState(() => supabase);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+    const { data: { subscription } } = client.auth.onAuthStateChange(
       (event) => {
         if (event === 'SIGNED_IN') {
           // Handle sign in event
@@ -27,10 +27,10 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
     return () => {
       subscription.unsubscribe();
     };
-  }, [supabase]);
+  }, [client]);
 
   return (
-    <Context.Provider value={{ supabase }}>
+    <Context.Provider value={{ supabase: client }}>
       {children}
     </Context.Provider>
   );

@@ -60,7 +60,7 @@ const Dashboard = () => {
           <ActionCard hoverable>
             <CardImage>
               <Image
-                src="https://images.pexels.com/photos/2519374/pexels-photo-2519374.jpeg"
+                src="https://images.unsplash.com/photo-1643913236750-39f654883299?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D "
                 alt="Generate route"
                 fill
                 style={{ objectFit: 'cover', borderRadius: '8px' }}
@@ -77,7 +77,7 @@ const Dashboard = () => {
           <ActionCard hoverable>
             <CardImage>
               <Image
-                src="https://images.pexels.com/photos/5225522/pexels-photo-5225522.jpeg"
+                src="https://images.unsplash.com/photo-1686766250114-2e95bfb0f848?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 alt="Saved routes"
                 fill
                 style={{ objectFit: 'cover', borderRadius: '8px' }}
@@ -94,7 +94,7 @@ const Dashboard = () => {
           <ActionCard hoverable>
             <CardImage>
               <Image
-                src="https://images.pexels.com/photos/58459/pexels-photo-58459.jpeg"
+                src="https://images.unsplash.com/photo-1611004061856-ccc3cbe944b2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 alt="Profile"
                 fill
                 style={{ objectFit: 'cover', borderRadius: '8px' }}

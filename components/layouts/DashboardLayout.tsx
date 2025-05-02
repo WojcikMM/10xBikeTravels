@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Layout, Menu, Button, Typography, Dropdown, Avatar, Space } from 'antd';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -55,13 +55,8 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const pathname = usePathname();
   const { user, signOut } = useAuth();
-  const [mounted, setMounted] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [mobileVisible, setMobileVisible] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const handleSignOut = async () => {
     await signOut();
@@ -113,10 +108,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     if (pathname === '/dashboard/profile') return ['profile'];
     return [];
   };
-
-  if (!mounted) {
-    return null;
-  }
 
   return (
     <Layout style={{ minHeight: '100vh' }}>

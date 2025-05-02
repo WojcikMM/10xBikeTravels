@@ -4,7 +4,7 @@ import { Inter } from 'next/font/google';
 import { ConfigProvider } from 'antd';
 import { SupabaseProvider } from '@/lib/supabase/provider';
 import { AuthProvider } from '@/lib/auth/auth-provider';
-import StyledComponentsRegistry from '@/lib/registry';
+import StyledComponentsRegistry from '@/lib/styled-components-registry';
 
 const inter = Inter({ subsets: ['latin'] });
 

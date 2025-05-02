@@ -139,7 +139,7 @@ const ProfilePage = () => {
             </Form.Item>
 
             <Form.Item>
-              <Button className="primary" type="primary" htmlType="submit" loading={saving}>
+              <Button type="primary" htmlType="submit" loading={saving}>
                 Save Preferences
               </Button>
             </Form.Item>
