@@ -152,7 +152,10 @@ export class OpenRouterService {
     
     Include 5-10 waypoints with accurate coordinates in Poland. Make the route logical and interesting.
     Ensure all coordinates are within Poland's borders (approximately 49°N to 55°N, 14°E to 24°E).
-    The route should be realistic and follow actual roads.`;
+    The route should be realistic and follow actual roads.
+    
+    Please make sure that you return only expected JSON wthout any additional descriptions or hints.
+    `;
 
     return prompt;
   }
