@@ -149,7 +149,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             <Space style={{ cursor: 'pointer' }}>
               <Avatar icon={<UserOutlined />} />
               {user?.email && (
-                <Text ellipsis style={{ maxWidth: 150 }}>
+                <Text ellipsis style={{ maxWidth: 150, verticalAlign: 'middle' }}>
                   {user.email}
                 </Text>
               )}
