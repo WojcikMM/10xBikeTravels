@@ -40,12 +40,6 @@ const RouteGenerationResultSchema = z.object({
   routePoints: z.array(RoutePointSchema)
 });
 
-// OpenRouter configuration
-const OPENROUTER_API_URL = process.env.NEXT_PUBLIC_OPENROUTER_API_URL || 'https://openrouter.ai/api/v1/chat/completions';
-const OPENROUTER_MODEL = process.env.NEXT_PUBLIC_OPENROUTER_MODEL || 'anthropic/claude-3-opus-20240229';
-const OPENROUTER_APP_NAME = process.env.NEXT_PUBLIC_OPENROUTER_APP_NAME || '10xBikeTravels';
-const OPENROUTER_APP_URL = process.env.NEXT_PUBLIC_OPENROUTER_APP_URL || 'https://10xbiketravels.com';
-
 // Error types
 export class OpenRouterError extends Error {
   constructor(message: string, public code?: string) {
@@ -63,16 +57,43 @@ export class RouteGenerationError extends Error {
 
 export class OpenRouterService {
   private apiKey: string;
+  private apiUrl: string;
+  private modelName: string;
+  private webAppUrl: string;
   private maxRetries: number;
   private retryDelay: number;
+  private maxTokens: number;
+  private temperature: number;
 
-  constructor(apiKey: string, maxRetries = 3, retryDelay = 1000) {
+  constructor(
+    apiKey: string,
+    apiUrl: string,
+    modelName: string,
+    webAppUrl: string,
+    maxRetries = 3,
+    retryDelay = 1000,
+    maxTokens = 900,
+    temperature = 9) {
     if (!apiKey) {
       throw new Error('OpenRouter API key is required');
     }
+    if (!apiUrl) {
+      throw new Error('OpenRouter API URL is required');
+    }
+    if (!modelName) {
+      throw new Error('OpenRouter model name is required');
+    }
+    if (!webAppUrl) {
+      throw new Error('OpenRouter web app URL is required');
+    }
     this.apiKey = apiKey;
+    this.apiUrl = apiUrl;
+    this.modelName = modelName;
+    this.webAppUrl = webAppUrl;
     this.maxRetries = maxRetries;
     this.retryDelay = retryDelay;
+    this.maxTokens = maxTokens;
+    this.temperature = temperature;
   }
 
   private async delay(ms: number): Promise<void> {
@@ -82,7 +103,7 @@ export class OpenRouterService {
   private buildPrompt(params: GenerateRouteParams): string {
     let prompt = `Generate an interesting motorcycle route in Poland. `;
     prompt += `The starting point is ${params.startPoint}. `;
-    
+
     // Add route priority to prompt
     switch (params.routePriority) {
       case 'scenic':
@@ -95,19 +116,19 @@ export class OpenRouterService {
         prompt += 'Avoid highways and main roads, focus on smaller, less traveled roads. ';
         break;
     }
-    
+
     // Add distance or duration constraint
     if (params.distance) {
       prompt += `The route should be approximately ${params.distance} kilometers. `;
     } else if (params.duration) {
       prompt += `The route should take approximately ${params.duration} hours to complete at a leisurely pace. `;
     }
-    
+
     // Add motorcycle type if provided
     if (params.motorcycleType && params.motorcycleType !== 'other') {
       prompt += `Consider that I'll be riding a ${params.motorcycleType} motorcycle. `;
     }
-    
+
     // Add instructions for output format
     prompt += `
     Please provide the output in the following JSON format:
@@ -138,16 +159,16 @@ export class OpenRouterService {
 
   private async callOpenRouter(prompt: string, retryCount = 0): Promise<RouteGenerationResult> {
     try {
-      const response = await fetch(OPENROUTER_API_URL, {
+      const response = await fetch(this.apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${this.apiKey}`,
-          'HTTP-Referer': OPENROUTER_APP_URL,
-          'X-Title': OPENROUTER_APP_NAME
+          'HTTP-Referer': this.webAppUrl,
+          'X-Title': '10xBikeTravels'
         },
         body: JSON.stringify({
-          model: OPENROUTER_MODEL,
+          model: this.modelName,
           messages: [
             {
               role: 'system',
@@ -158,8 +179,8 @@ export class OpenRouterService {
               content: prompt
             }
           ],
-          temperature: 0.7,
-          max_tokens: 2000
+          temperature: this.temperature,
+          max_tokens: this.maxTokens
         })
       });
 
@@ -181,14 +202,14 @@ export class OpenRouterService {
       try {
         // Parse the JSON response
         const parsedContent = JSON.parse(content);
-        
+
         // Validate the response structure
         const validatedResult = RouteGenerationResultSchema.parse(parsedContent);
-        
+
         // Additional validation for coordinates
         for (const point of validatedResult.routePoints) {
           if (point.coordinates.lat < 49 || point.coordinates.lat > 55 ||
-              point.coordinates.lng < 14 || point.coordinates.lng > 24) {
+            point.coordinates.lng < 14 || point.coordinates.lng > 24) {
             throw new RouteGenerationError('Generated coordinates are outside Poland\'s borders');
           }
         }
