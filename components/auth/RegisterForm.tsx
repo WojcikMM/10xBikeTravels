@@ -3,63 +3,47 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, Alert, Typography } from 'antd';
 import { useRouter } from 'next/navigation';
-import { LockOutlined, MailOutlined } from '@ant-design/icons';
+import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
 import { useSupabase } from '@/lib/supabase/provider';
+import Link from 'next/link';
 
 const { Text } = Typography;
 
-interface LoginFormValues {
+interface RegisterFormValues {
   email: string;
   password: string;
+  confirmPassword: string;
 }
 
-const LoginForm = () => {
+const RegisterForm = () => {
   const router = useRouter();
   const { supabase } = useSupabase();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const onFinish = async (values: LoginFormValues) => {
+  const onFinish = async (values: RegisterFormValues) => {
+    // Check if passwords match
+    if (values.password !== values.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signUp({
         email: values.email,
         password: values.password,
       });
 
       if (error) throw error;
 
-      // If successful, redirect to dashboard
-      router.push('/dashboard');
-      router.refresh();
+      // Show success or redirect to login page
+      router.push('/login?registration=success');
     } catch (error: any) {
-      console.error('Login error:', error);
-      setError(error.message || 'Failed to sign in');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDemoLogin = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: 'demo@example.com',
-        password: 'demodemo',
-      });
-
-      if (error) throw error;
-
-      // If successful, redirect to dashboard
-      router.push('/dashboard');
-      router.refresh();
-    } catch (error: any) {
-      console.error('Demo login error:', error);
-      setError(error.message || 'Failed to sign in with demo account');
+      console.error('Registration error:', error);
+      setError(error.message || 'Failed to register');
     } finally {
       setLoading(false);
     }
@@ -77,7 +61,7 @@ const LoginForm = () => {
       )}
 
       <Form
-        name="login"
+        name="register"
         layout="vertical"
         onFinish={onFinish}
         autoComplete="off"
@@ -98,7 +82,10 @@ const LoginForm = () => {
 
         <Form.Item
           name="password"
-          rules={[{ required: true, message: 'Please input your password' }]}
+          rules={[
+            { required: true, message: 'Please input your password' },
+            { min: 6, message: 'Password must be at least 6 characters' }
+          ]}
         >
           <Input.Password 
             prefix={<LockOutlined />} 
@@ -106,16 +93,28 @@ const LoginForm = () => {
             size="large" 
           />
         </Form.Item>
-        
-        <div style={{ textAlign: 'right', marginBottom: '1rem' }}>
-          <Button 
-            type="link" 
-            onClick={() => router.push('/forgot-password')}
-            style={{ padding: 0 }}
-          >
-            Forgot password?
-          </Button>
-        </div>
+
+        <Form.Item
+          name="confirmPassword"
+          dependencies={['password']}
+          rules={[
+            { required: true, message: 'Please confirm your password' },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || getFieldValue('password') === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(new Error('The two passwords do not match'));
+              },
+            }),
+          ]}
+        >
+          <Input.Password 
+            prefix={<LockOutlined />} 
+            placeholder="Confirm Password" 
+            size="large" 
+          />
+        </Form.Item>
 
         <Form.Item>
           <Button 
@@ -125,33 +124,22 @@ const LoginForm = () => {
             size="large"
             block
           >
-            Log in
+            Register
           </Button>
         </Form.Item>
       </Form>
 
       <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-        <Text type="secondary">Don&apos;t have an account?</Text>
+        <Text type="secondary">Already have an account?</Text>
         <Button 
           type="link" 
-          onClick={() => router.push('/register')}
+          onClick={() => router.push('/login')}
         >
-          Register
-        </Button>
-      </div>
-      
-      <div style={{ textAlign: 'center', marginTop: '0.5rem' }}>
-        <Text type="secondary">or</Text>
-        <Button 
-          type="link" 
-          onClick={handleDemoLogin}
-          loading={loading}
-        >
-          Use Demo Account
+          Log in
         </Button>
       </div>
     </div>
   );
 };
 
-export default LoginForm;
+export default RegisterForm; 
