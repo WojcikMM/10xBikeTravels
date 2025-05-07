@@ -17,7 +17,7 @@ import {
   Space,
   Result,
 } from 'antd';
-import { SendOutlined, SaveOutlined, ReloadOutlined } from '@ant-design/icons';
+import { SendOutlined, SaveOutlined, ReloadOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { useSupabase } from '@/lib/supabase/provider';
@@ -43,6 +43,12 @@ const ResultContainer = styled.div`
   margin-top: 2rem;
 `;
 
+const ProfileInfoCard = styled(Card)`
+  margin-bottom: 1.5rem;
+  background-color: #f0f7ff;
+  border: 1px solid #91caff;
+`;
+
 const GeneratePage = () => {
   const { user } = useAuth();
   const { supabase } = useSupabase();
@@ -53,7 +59,8 @@ const GeneratePage = () => {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
-  const [useProfilePreference, setUseProfilePreference] = useState(true);
+  const [useProfilePreference, setUseProfilePreference] = useState(false);
+  const [hasProfileData, setHasProfileData] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -72,10 +79,20 @@ const GeneratePage = () => {
 
         if (data) {
           setProfile(data);
+          // Check if profile has required data
+          const hasRequiredData = data.route_priority && data.motorcycle_type;
+          setHasProfileData(hasRequiredData);
+          // Only enable profile preferences if we have the required data
+          setUseProfilePreference(hasRequiredData);
+        } else {
+          setHasProfileData(false);
+          setUseProfilePreference(false);
         }
       } catch (error) {
         console.error('Error fetching profile:', error);
         message.error('Failed to load profile data');
+        setHasProfileData(false);
+        setUseProfilePreference(false);
       } finally {
         setProfileLoading(false);
       }
@@ -160,6 +177,25 @@ const GeneratePage = () => {
         Create a new motorcycle route in Poland based on your preferences and starting point.
       </Paragraph>
 
+      {!hasProfileData && !profileLoading && (
+        <ProfileInfoCard>
+          <Space direction="vertical">
+            <Title level={4}>
+              <InfoCircleOutlined style={{ marginRight: 8 }} />
+              Set Up Your Profile
+            </Title>
+            <Paragraph>
+              To get the most out of MotoTrail, consider setting up your profile with your preferred
+              route style and motorcycle type. This will allow you to quickly generate routes that
+              match your preferences without having to specify them each time.
+            </Paragraph>
+            <Button type="primary" onClick={() => (window.location.href = '/dashboard/profile')}>
+              Set Up Profile
+            </Button>
+          </Space>
+        </ProfileInfoCard>
+      )}
+
       <StyledCard>
         {profileLoading ? (
           <div style={{ textAlign: 'center', padding: '3rem' }}>
@@ -175,13 +211,11 @@ const GeneratePage = () => {
               distance: 150,
               route_priority: 'scenic',
               motorcycle_type: 'standard',
-            }}
-          >
+            }}>
             <Form.Item
               name="start_point"
               label="Starting Point"
-              rules={[{ required: true, message: 'Please enter a starting point' }]}
-            >
+              rules={[{ required: true, message: 'Please enter a starting point' }]}>
               <Input placeholder="Enter a city or location in Poland" />
             </Form.Item>
 
@@ -189,13 +223,14 @@ const GeneratePage = () => {
               <Radio.Group
                 value={useProfilePreference}
                 onChange={(e) => setUseProfilePreference(e.target.value)}
-                style={{ marginBottom: '1rem' }}
-              >
-                <Radio value={true}>Use profile preferences</Radio>
+                style={{ marginBottom: '1rem' }}>
+                <Radio value={true} disabled={!hasProfileData}>
+                  Use profile preferences
+                </Radio>
                 <Radio value={false}>Customize for this route</Radio>
               </Radio.Group>
 
-              {profile && useProfilePreference ? (
+              {profile && useProfilePreference && hasProfileData ? (
                 <div>
                   <Alert
                     message="Using your profile preferences"
@@ -232,8 +267,7 @@ const GeneratePage = () => {
                         required: !useProfilePreference,
                         message: 'Please select a route priority',
                       },
-                    ]}
-                  >
+                    ]}>
                     <Select placeholder="Select route priority">
                       <Option value="scenic">Scenic Route</Option>
                       <Option value="twisty">Twisty Roads</Option>
@@ -267,23 +301,20 @@ const GeneratePage = () => {
                 noStyle
                 shouldUpdate={(prevValues, currentValues) =>
                   prevValues.distance_type !== currentValues.distance_type
-                }
-              >
+                }>
                 {({ getFieldValue }) =>
                   getFieldValue('distance_type') === 'distance' ? (
                     <Form.Item
                       name="distance"
                       rules={[{ required: true, message: 'Please enter a distance' }]}
-                      style={{ marginTop: '1rem' }}
-                    >
+                      style={{ marginTop: '1rem' }}>
                       <InputNumber min={1} max={500} addonAfter="km" style={{ width: '100%' }} />
                     </Form.Item>
                   ) : (
                     <Form.Item
                       name="duration"
                       rules={[{ required: true, message: 'Please enter a duration' }]}
-                      style={{ marginTop: '1rem' }}
-                    >
+                      style={{ marginTop: '1rem' }}>
                       <InputNumber
                         min={0.5}
                         max={10}
@@ -303,8 +334,7 @@ const GeneratePage = () => {
                 htmlType="submit"
                 icon={<SendOutlined />}
                 loading={generating}
-                size="large"
-              >
+                size="large">
                 Generate Route
               </Button>
             </Form.Item>
