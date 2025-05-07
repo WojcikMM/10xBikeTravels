@@ -7,4 +7,4 @@ TODOS:
 
 BUGS:
 
-1. User can select "user preferences" when user don't fill profile settings.
+- [x] User can select "user preferences" when user don't fill profile settings.
