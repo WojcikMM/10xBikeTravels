@@ -31,16 +31,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const fetchSession = async () => {
       try {
-        const {
-          data: { session },
-          error,
-        } = await supabase.auth.getSession();
-        if (error) throw error;
+        const { data, error } = await supabase.auth.getSession();
 
-        setSession(session);
-        setUser(session?.user || null);
-      } catch (error) {
-        console.error('Error fetching session:', error);
+        if (error) {
+          console.error('Error fetching session:', error);
+          return;
+        }
+
+        setSession(data.session);
+        setUser(data.session?.user || null);
       } finally {
         setLoading(false);
       }
@@ -50,28 +49,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      setSession(session);
-      setUser(session?.user || null);
+    } = supabase.auth.onAuthStateChange((_event, currentSession) => {
+      setSession(currentSession);
+      setUser(currentSession?.user || null);
       setLoading(false);
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, [supabase, router]);
+  }, [supabase]);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
-    router.push('/login');
+    try {
+      await supabase.auth.signOut();
+      // Use window.location for a full page reload to ensure server sees the change
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
-  const value = {
-    user,
-    session,
-    signOut,
-    loading,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, session, signOut, loading }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };

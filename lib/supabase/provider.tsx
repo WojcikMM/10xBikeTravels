@@ -1,35 +1,20 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
-import { supabase } from './client';
+import { createContext, useContext, useState } from 'react';
+import { createBrowserClient } from './client';
+import { SupabaseClient } from '@supabase/supabase-js';
 import { Database } from './database.types';
 
 type SupabaseContext = {
-  supabase: typeof supabase;
+  supabase: SupabaseClient<Database>;
 };
 
 const Context = createContext<SupabaseContext | undefined>(undefined);
 
 export function SupabaseProvider({ children }: { children: React.ReactNode }) {
-  const [client] = useState(() => supabase);
+  const [supabase] = useState(() => createBrowserClient());
 
-  useEffect(() => {
-    const {
-      data: { subscription },
-    } = client.auth.onAuthStateChange((event) => {
-      if (event === 'SIGNED_IN') {
-        // Handle sign in event
-      } else if (event === 'SIGNED_OUT') {
-        // Handle sign out event
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [client]);
-
-  return <Context.Provider value={{ supabase: client }}>{children}</Context.Provider>;
+  return <Context.Provider value={{ supabase }}>{children}</Context.Provider>;
 }
 
 export const useSupabase = () => {

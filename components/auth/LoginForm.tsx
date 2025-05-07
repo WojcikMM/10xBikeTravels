@@ -29,9 +29,8 @@ const LoginForm = () => {
 
       if (error) throw error;
 
-      // If successful, redirect to dashboard
-      router.push('/dashboard');
-      router.refresh();
+      // Use window.location.href for a full page reload to ensure server sees the session
+      window.location.href = '/dashboard';
     } catch (error: any) {
       console.error('Login error:', error);
       notification.error({
@@ -55,9 +54,8 @@ const LoginForm = () => {
 
       if (error) throw error;
 
-      // If successful, redirect to dashboard
-      router.push('/dashboard');
-      router.refresh();
+      // Use window.location.href for a full page reload to ensure server sees the session
+      window.location.href = '/dashboard';
     } catch (error: any) {
       console.error('Demo login error:', error);
       notification.error({
