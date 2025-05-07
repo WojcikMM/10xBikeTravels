@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Form, Input, Button, Alert, Typography } from 'antd';
+import { Form, Input, Button, Typography, notification } from 'antd';
 import { useRouter } from 'next/navigation';
 import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
 import { useSupabase } from '@/lib/supabase/provider';
@@ -19,17 +19,19 @@ const RegisterForm = () => {
   const router = useRouter();
   const { supabase } = useSupabase();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const onFinish = async (values: RegisterFormValues) => {
     // Check if passwords match
     if (values.password !== values.confirmPassword) {
-      setError('Passwords do not match');
+      notification.error({
+        message: 'Registration Failed',
+        description: 'Passwords do not match',
+        placement: 'top',
+      });
       return;
     }
 
     setLoading(true);
-    setError(null);
 
     try {
       const { error } = await supabase.auth.signUp({
@@ -39,11 +41,21 @@ const RegisterForm = () => {
 
       if (error) throw error;
 
-      // Show success or redirect to login page
+      // Show success notification and redirect to login page
+      notification.success({
+        message: 'Registration Successful',
+        description: 'Your account has been created. Please check your email to confirm your account.',
+        placement: 'top',
+      });
+      
       router.push('/login?registration=success');
     } catch (error: any) {
       console.error('Registration error:', error);
-      setError(error.message || 'Failed to register');
+      notification.error({
+        message: 'Registration Failed',
+        description: error.message || 'Failed to register',
+        placement: 'top',
+      });
     } finally {
       setLoading(false);
     }
@@ -51,8 +63,6 @@ const RegisterForm = () => {
 
   return (
     <div>
-      {error && <Alert message={error} type="error" showIcon style={{ marginBottom: '1rem' }} />}
-
       <Form name="register" layout="vertical" onFinish={onFinish} autoComplete="off">
         <Form.Item
           name="email"

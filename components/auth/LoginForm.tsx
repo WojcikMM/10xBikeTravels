@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Form, Input, Button, Alert, Typography } from 'antd';
+import { Form, Input, Button, Typography, notification } from 'antd';
 import { useRouter } from 'next/navigation';
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { useSupabase } from '@/lib/supabase/provider';
@@ -17,11 +17,9 @@ const LoginForm = () => {
   const router = useRouter();
   const { supabase } = useSupabase();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const onFinish = async (values: LoginFormValues) => {
     setLoading(true);
-    setError(null);
 
     try {
       const { error } = await supabase.auth.signInWithPassword({
@@ -36,7 +34,11 @@ const LoginForm = () => {
       router.refresh();
     } catch (error: any) {
       console.error('Login error:', error);
-      setError(error.message || 'Failed to sign in');
+      notification.error({
+        message: 'Login Failed',
+        description: error.message || 'Failed to sign in',
+        placement: 'top',
+      });
     } finally {
       setLoading(false);
     }
@@ -44,7 +46,6 @@ const LoginForm = () => {
 
   const handleDemoLogin = async () => {
     setLoading(true);
-    setError(null);
 
     try {
       const { error } = await supabase.auth.signInWithPassword({
@@ -59,7 +60,11 @@ const LoginForm = () => {
       router.refresh();
     } catch (error: any) {
       console.error('Demo login error:', error);
-      setError(error.message || 'Failed to sign in with demo account');
+      notification.error({
+        message: 'Demo Login Failed',
+        description: error.message || 'Failed to sign in with demo account',
+        placement: 'top',
+      });
     } finally {
       setLoading(false);
     }
@@ -67,23 +72,19 @@ const LoginForm = () => {
 
   return (
     <div>
-      {error && <Alert message={error} type="error" showIcon style={{ marginBottom: '1rem' }} />}
-
       <Form name="login" layout="vertical" onFinish={onFinish} autoComplete="off">
         <Form.Item
           name="email"
           rules={[
             { required: true, message: 'Please input your email' },
             { type: 'email', message: 'Please enter a valid email' },
-          ]}
-        >
+          ]}>
           <Input prefix={<MailOutlined />} placeholder="Email" size="large" />
         </Form.Item>
 
         <Form.Item
           name="password"
-          rules={[{ required: true, message: 'Please input your password' }]}
-        >
+          rules={[{ required: true, message: 'Please input your password' }]}>
           <Input.Password prefix={<LockOutlined />} placeholder="Password" size="large" />
         </Form.Item>
 
@@ -91,8 +92,7 @@ const LoginForm = () => {
           <Button
             type="link"
             onClick={() => router.push('/forgot-password')}
-            style={{ padding: 0 }}
-          >
+            style={{ padding: 0 }}>
             Forgot password?
           </Button>
         </div>

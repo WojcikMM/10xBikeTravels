@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Form, Input, Button, Alert, Typography } from 'antd';
+import { Form, Input, Button, Typography, notification } from 'antd';
 import { useRouter } from 'next/navigation';
 import { MailOutlined } from '@ant-design/icons';
 import { useSupabase } from '@/lib/supabase/provider';
@@ -16,13 +16,9 @@ const ForgotPasswordForm = () => {
   const router = useRouter();
   const { supabase } = useSupabase();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
 
   const onFinish = async (values: ForgotPasswordFormValues) => {
     setLoading(true);
-    setError(null);
-    setSuccess(false);
 
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
@@ -31,10 +27,22 @@ const ForgotPasswordForm = () => {
 
       if (error) throw error;
 
-      setSuccess(true);
+      notification.success({
+        message: 'Password Reset Email Sent',
+        description: 'Please check your inbox for instructions to reset your password.',
+        placement: 'top',
+      });
+      
+      // Clear the form
+      const form = document.querySelector('form[name="forgot-password"]') as HTMLFormElement;
+      if (form) form.reset();
     } catch (error: any) {
       console.error('Password reset error:', error);
-      setError(error.message || 'Failed to send password reset email');
+      notification.error({
+        message: 'Password Reset Failed',
+        description: error.message || 'Failed to send password reset email',
+        placement: 'top',
+      });
     } finally {
       setLoading(false);
     }
@@ -42,17 +50,6 @@ const ForgotPasswordForm = () => {
 
   return (
     <div>
-      {error && <Alert message={error} type="error" showIcon style={{ marginBottom: '1rem' }} />}
-
-      {success && (
-        <Alert
-          message="Password reset email sent. Please check your inbox."
-          type="success"
-          showIcon
-          style={{ marginBottom: '1rem' }}
-        />
-      )}
-
       <Form name="forgot-password" layout="vertical" onFinish={onFinish} autoComplete="off">
         <Form.Item
           name="email"
