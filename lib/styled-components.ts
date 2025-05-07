@@ -5,4 +5,4 @@ import { Database } from './supabase/database.types';
 export const createServerClient = () => {
   const cookieStore = cookies();
   return createServerComponentClient<Database>({ cookies: () => cookieStore });
-}; 
+};

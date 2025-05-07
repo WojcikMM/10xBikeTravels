@@ -5,10 +5,10 @@ import { Layout, Menu, Button, Typography, Dropdown, Avatar, Space } from 'antd'
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import styled from 'styled-components';
-import { 
-  HomeOutlined, 
-  RocketOutlined, 
-  UserOutlined, 
+import {
+  HomeOutlined,
+  RocketOutlined,
+  UserOutlined,
   LogoutOutlined,
   MenuOutlined,
   StarOutlined,
@@ -37,7 +37,7 @@ const StyledHeader = styled(Header)`
   background: white;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   z-index: 1;
-  
+
   @media (max-width: 768px) {
     padding: 0 12px;
   }
@@ -45,7 +45,7 @@ const StyledHeader = styled(Header)`
 
 const MobileMenuButton = styled(Button)`
   display: none;
-  
+
   @media (max-width: 768px) {
     display: block;
   }
@@ -127,15 +127,8 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           zIndex: 2,
         }}
       >
-        <Logo>
-          {!collapsed && 'MotoTrail'}
-        </Logo>
-        <Menu
-          theme="dark"
-          mode="inline"
-          selectedKeys={getSelectedKeys()}
-          items={items}
-        />
+        <Logo>{!collapsed && 'MotoTrail'}</Logo>
+        <Menu theme="dark" mode="inline" selectedKeys={getSelectedKeys()} items={items} />
       </Sider>
       <Layout style={{ marginLeft: collapsed ? 0 : 200 }}>
         <StyledHeader>
@@ -156,9 +149,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             </Space>
           </Dropdown>
         </StyledHeader>
-        <Content style={{ margin: '24px 16px', overflow: 'initial' }}>
-          {children}
-        </Content>
+        <Content style={{ margin: '24px 16px', overflow: 'initial' }}>{children}</Content>
       </Layout>
     </Layout>
   );

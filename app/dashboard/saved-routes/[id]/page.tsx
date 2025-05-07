@@ -1,24 +1,24 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { 
-  Typography, 
-  Card, 
-  Button, 
-  Spin, 
-  Divider, 
-  Space, 
+import {
+  Typography,
+  Card,
+  Button,
+  Spin,
+  Divider,
+  Space,
   Tag,
   Descriptions,
   Alert,
   message,
-  Breadcrumb
+  Breadcrumb,
 } from 'antd';
-import { 
-  ArrowLeftOutlined, 
-  EnvironmentOutlined, 
+import {
+  ArrowLeftOutlined,
+  EnvironmentOutlined,
   RocketOutlined,
-  ClockCircleOutlined
+  ClockCircleOutlined,
 } from '@ant-design/icons';
 import styled from 'styled-components';
 import Link from 'next/link';
@@ -63,7 +63,7 @@ const RouteDetailPage = () => {
           .single();
 
         if (error) throw error;
-        
+
         if (data) {
           // Format the data to match the format expected by RouteResult
           setRoute({
@@ -97,8 +97,8 @@ const RouteDetailPage = () => {
         style={{ marginBottom: '1rem' }}
       />
 
-      <Button 
-        icon={<ArrowLeftOutlined />} 
+      <Button
+        icon={<ArrowLeftOutlined />}
         onClick={() => router.back()}
         style={{ marginBottom: '1rem' }}
       >
@@ -110,17 +110,9 @@ const RouteDetailPage = () => {
           <Spin size="large" />
         </div>
       ) : error ? (
-        <Alert
-          message="Error"
-          description={error}
-          type="error"
-          showIcon
-        />
+        <Alert message="Error" description={error} type="error" showIcon />
       ) : route ? (
-        <RouteResult
-          result={route}
-          viewOnly={true}
-        />
+        <RouteResult result={route} viewOnly={true} />
       ) : (
         <Alert
           message="Not Found"

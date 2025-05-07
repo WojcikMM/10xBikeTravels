@@ -67,49 +67,29 @@ const LoginForm = () => {
 
   return (
     <div>
-      {error && (
-        <Alert 
-          message={error} 
-          type="error" 
-          showIcon 
-          style={{ marginBottom: '1rem' }} 
-        />
-      )}
+      {error && <Alert message={error} type="error" showIcon style={{ marginBottom: '1rem' }} />}
 
-      <Form
-        name="login"
-        layout="vertical"
-        onFinish={onFinish}
-        autoComplete="off"
-      >
+      <Form name="login" layout="vertical" onFinish={onFinish} autoComplete="off">
         <Form.Item
           name="email"
           rules={[
             { required: true, message: 'Please input your email' },
-            { type: 'email', message: 'Please enter a valid email' }
+            { type: 'email', message: 'Please enter a valid email' },
           ]}
         >
-          <Input 
-            prefix={<MailOutlined />} 
-            placeholder="Email" 
-            size="large" 
-          />
+          <Input prefix={<MailOutlined />} placeholder="Email" size="large" />
         </Form.Item>
 
         <Form.Item
           name="password"
           rules={[{ required: true, message: 'Please input your password' }]}
         >
-          <Input.Password 
-            prefix={<LockOutlined />} 
-            placeholder="Password" 
-            size="large" 
-          />
+          <Input.Password prefix={<LockOutlined />} placeholder="Password" size="large" />
         </Form.Item>
-        
+
         <div style={{ textAlign: 'right', marginBottom: '1rem' }}>
-          <Button 
-            type="link" 
+          <Button
+            type="link"
             onClick={() => router.push('/forgot-password')}
             style={{ padding: 0 }}
           >
@@ -118,13 +98,7 @@ const LoginForm = () => {
         </div>
 
         <Form.Item>
-          <Button 
-            type="primary" 
-            htmlType="submit" 
-            loading={loading}
-            size="large"
-            block
-          >
+          <Button type="primary" htmlType="submit" loading={loading} size="large" block>
             Log in
           </Button>
         </Form.Item>
@@ -132,21 +106,14 @@ const LoginForm = () => {
 
       <div style={{ textAlign: 'center', marginTop: '1rem' }}>
         <Text type="secondary">Don&apos;t have an account?</Text>
-        <Button 
-          type="link" 
-          onClick={() => router.push('/register')}
-        >
+        <Button type="link" onClick={() => router.push('/register')}>
           Register
         </Button>
       </div>
-      
+
       <div style={{ textAlign: 'center', marginTop: '0.5rem' }}>
         <Text type="secondary">or</Text>
-        <Button 
-          type="link" 
-          onClick={handleDemoLogin}
-          loading={loading}
-        >
+        <Button type="link" onClick={handleDemoLogin} loading={loading}>
           Use Demo Account
         </Button>
       </div>

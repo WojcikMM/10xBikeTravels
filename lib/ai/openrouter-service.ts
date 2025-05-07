@@ -30,19 +30,22 @@ const RoutePointSchema = z.object({
   description: z.string(),
   coordinates: z.object({
     lat: z.number(),
-    lng: z.number()
-  })
+    lng: z.number(),
+  }),
 });
 
 const RouteGenerationResultSchema = z.object({
   title: z.string(),
   summary: z.string(),
-  routePoints: z.array(RoutePointSchema)
+  routePoints: z.array(RoutePointSchema),
 });
 
 // Error types
 export class OpenRouterError extends Error {
-  constructor(message: string, public code?: string) {
+  constructor(
+    message: string,
+    public code?: string
+  ) {
     super(message);
     this.name = 'OpenRouterError';
   }
@@ -73,7 +76,8 @@ export class OpenRouterService {
     maxRetries = 3,
     retryDelay = 1000,
     maxTokens = 900,
-    temperature = 9) {
+    temperature = 9
+  ) {
     if (!apiKey) {
       throw new Error('OpenRouter API key is required');
     }
@@ -97,7 +101,7 @@ export class OpenRouterService {
   }
 
   private async delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   private buildPrompt(params: GenerateRouteParams): string {
@@ -166,25 +170,26 @@ export class OpenRouterService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`,
+          Authorization: `Bearer ${this.apiKey}`,
           'HTTP-Referer': this.webAppUrl,
-          'X-Title': '10xBikeTravels'
+          'X-Title': '10xBikeTravels',
         },
         body: JSON.stringify({
           model: this.modelName,
           messages: [
             {
               role: 'system',
-              content: 'You are a motorcycle route planning expert specializing in creating interesting and safe routes in Poland. You have extensive knowledge of Polish roads, landscapes, and points of interest.'
+              content:
+                'You are a motorcycle route planning expert specializing in creating interesting and safe routes in Poland. You have extensive knowledge of Polish roads, landscapes, and points of interest.',
             },
             {
               role: 'user',
-              content: prompt
-            }
+              content: prompt,
+            },
           ],
           temperature: this.temperature,
-          max_tokens: this.maxTokens
-        })
+          max_tokens: this.maxTokens,
+        }),
       });
 
       if (!response.ok) {
@@ -211,9 +216,13 @@ export class OpenRouterService {
 
         // Additional validation for coordinates
         for (const point of validatedResult.routePoints) {
-          if (point.coordinates.lat < 49 || point.coordinates.lat > 55 ||
-            point.coordinates.lng < 14 || point.coordinates.lng > 24) {
-            throw new RouteGenerationError('Generated coordinates are outside Poland\'s borders');
+          if (
+            point.coordinates.lat < 49 ||
+            point.coordinates.lat > 55 ||
+            point.coordinates.lng < 14 ||
+            point.coordinates.lng > 24
+          ) {
+            throw new RouteGenerationError("Generated coordinates are outside Poland's borders");
           }
         }
 
@@ -247,4 +256,4 @@ export class OpenRouterService {
       throw new Error('An unexpected error occurred while generating the route');
     }
   }
-} 
+}

@@ -7,7 +7,7 @@ if (!process.env.NEXT_PUBLIC_OPENROUTER_API_URL) {
 }
 
 if (!process.env.NEXT_PUBLIC_OPENROUTER_MODEL) {
-  throw new Error('NEXT_PUBLIC_OPENROUTER_MODEL environment variable is not set'); 
+  throw new Error('NEXT_PUBLIC_OPENROUTER_MODEL environment variable is not set');
 }
 
 if (!process.env.NEXT_PUBLIC_OPENROUTER_APP_URL) {
@@ -23,10 +23,8 @@ const config = {
   MAX_RETRIES: 3,
   RETRY_DELAY: 1000, // in milliseconds
   TEMPERATURE: 0.7,
-  MAX_TOKENS: 2000
+  MAX_TOKENS: 2000,
 } as const;
-
-
 
 // Create a singleton instance of OpenRouterService
 import { OpenRouterService } from './openrouter-service';
@@ -40,4 +38,4 @@ export const openRouterService = new OpenRouterService(
   config.RETRY_DELAY,
   config.MAX_TOKENS,
   config.TEMPERATURE
-); 
+);

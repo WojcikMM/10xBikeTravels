@@ -1,24 +1,24 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { 
-  Typography, 
-  List, 
-  Card, 
-  Button, 
-  Spin, 
-  Empty, 
-  Popconfirm, 
+import {
+  Typography,
+  List,
+  Card,
+  Button,
+  Spin,
+  Empty,
+  Popconfirm,
   message,
   Tag,
   Space,
-  Divider
+  Divider,
 } from 'antd';
-import { 
-  DeleteOutlined, 
-  EnvironmentOutlined, 
+import {
+  DeleteOutlined,
+  EnvironmentOutlined,
   ClockCircleOutlined,
-  RightOutlined
+  RightOutlined,
 } from '@ant-design/icons';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
@@ -41,7 +41,7 @@ const StyledCard = styled(Card)`
 
 const RouteItem = styled(List.Item)`
   transition: all 0.3s ease;
-  
+
   &:hover {
     background-color: rgba(0, 0, 0, 0.02);
   }
@@ -91,8 +91,8 @@ const SavedRoutesPage = () => {
         .eq('user_id', user.id);
 
       if (error) throw error;
-      
-      setRoutes(routes.filter(route => route.id !== id));
+
+      setRoutes(routes.filter((route) => route.id !== id));
       message.success('Route deleted successfully');
     } catch (error) {
       console.error('Error deleting route:', error);
@@ -108,13 +108,13 @@ const SavedRoutesPage = () => {
 
   const getRouteTypeTag = (params: any) => {
     const priority = params?.routePriority;
-    
+
     if (!priority) return null;
-    
+
     let color = '';
     let text = '';
-    
-    switch(priority) {
+
+    switch (priority) {
       case 'scenic':
         color = 'green';
         text = 'Scenic';
@@ -130,16 +130,14 @@ const SavedRoutesPage = () => {
       default:
         return null;
     }
-    
+
     return <Tag color={color}>{text}</Tag>;
   };
 
   return (
     <SavedRoutesContainer>
       <Title level={2}>Your Saved Routes</Title>
-      <Paragraph>
-        View and manage your previously generated motorcycle routes.
-      </Paragraph>
+      <Paragraph>View and manage your previously generated motorcycle routes.</Paragraph>
 
       <StyledCard>
         {loading ? (
@@ -147,10 +145,7 @@ const SavedRoutesPage = () => {
             <Spin size="large" />
           </div>
         ) : routes.length === 0 ? (
-          <Empty
-            description="You don't have any saved routes yet"
-            style={{ padding: '3rem 0' }}
-          >
+          <Empty description="You don't have any saved routes yet" style={{ padding: '3rem 0' }}>
             <Button type="primary" onClick={() => router.push('/dashboard/generate')}>
               Generate Your First Route
             </Button>
@@ -159,19 +154,22 @@ const SavedRoutesPage = () => {
           <List
             itemLayout="vertical"
             dataSource={routes}
-            renderItem={route => (
+            renderItem={(route) => (
               <RouteItem>
                 <List.Item.Meta
                   title={
                     <Space size="middle">
-                      <Text strong style={{ fontSize: '16px' }}>{route.title}</Text>
+                      <Text strong style={{ fontSize: '16px' }}>
+                        {route.title}
+                      </Text>
                       {route.input_params && getRouteTypeTag(route.input_params)}
                     </Space>
                   }
                   description={
                     <Space direction="vertical" size="small" style={{ width: '100%' }}>
                       <Text type="secondary">
-                        Created {formatDistanceToNow(new Date(route.created_at), { addSuffix: true })}
+                        Created{' '}
+                        {formatDistanceToNow(new Date(route.created_at), { addSuffix: true })}
                       </Text>
                       <Space size="large">
                         {route.input_params?.startPoint && (
@@ -211,11 +209,7 @@ const SavedRoutesPage = () => {
                     okText="Yes"
                     cancelText="No"
                   >
-                    <Button 
-                      danger 
-                      icon={<DeleteOutlined />} 
-                      loading={deleting === route.id}
-                    >
+                    <Button danger icon={<DeleteOutlined />} loading={deleting === route.id}>
                       Delete
                     </Button>
                   </Popconfirm>

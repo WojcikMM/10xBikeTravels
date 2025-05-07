@@ -1,21 +1,21 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { 
-  Typography, 
-  Card, 
-  Form, 
-  Select, 
-  Input, 
-  InputNumber, 
-  Button, 
-  Spin, 
+import {
+  Typography,
+  Card,
+  Form,
+  Select,
+  Input,
+  InputNumber,
+  Button,
+  Spin,
   Divider,
   Radio,
   message,
   Alert,
   Space,
-  Result
+  Result,
 } from 'antd';
 import { SendOutlined, SaveOutlined, ReloadOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
@@ -88,18 +88,20 @@ const GeneratePage = () => {
     setError(null);
     setGenerating(true);
     setResult(null);
-    
+
     try {
       // Determine which route priority to use
-      const routePriority = useProfilePreference && profile?.route_priority 
-        ? profile.route_priority 
-        : values.route_priority;
-      
+      const routePriority =
+        useProfilePreference && profile?.route_priority
+          ? profile.route_priority
+          : values.route_priority;
+
       // Determine which motorcycle type to use
-      const motorcycleType = useProfilePreference && profile?.motorcycle_type 
-        ? profile.motorcycle_type 
-        : values.motorcycle_type;
-      
+      const motorcycleType =
+        useProfilePreference && profile?.motorcycle_type
+          ? profile.motorcycle_type
+          : values.motorcycle_type;
+
       // Generate route using AI
       const generatedRoute = await generateRoute({
         startPoint: values.start_point,
@@ -108,7 +110,7 @@ const GeneratePage = () => {
         distance: values.distance_type === 'distance' ? values.distance : undefined,
         duration: values.distance_type === 'duration' ? values.duration : undefined,
       });
-      
+
       setResult({
         ...generatedRoute,
         inputParams: {
@@ -117,7 +119,7 @@ const GeneratePage = () => {
           motorcycleType,
           distance: values.distance_type === 'distance' ? values.distance : undefined,
           duration: values.distance_type === 'duration' ? values.duration : undefined,
-        }
+        },
       });
     } catch (error: any) {
       console.error('Error generating route:', error);
@@ -192,17 +194,27 @@ const GeneratePage = () => {
                 <Radio value={true}>Use profile preferences</Radio>
                 <Radio value={false}>Customize for this route</Radio>
               </Radio.Group>
-              
+
               {profile && useProfilePreference ? (
                 <div>
                   <Alert
                     message="Using your profile preferences"
                     description={
                       <Space direction="vertical">
-                        <Text>Route Priority: {profile.route_priority === 'scenic' ? 'Scenic Route' : 
-                          profile.route_priority === 'twisty' ? 'Twisty Roads' : 'Avoid Highways'}</Text>
+                        <Text>
+                          Route Priority:{' '}
+                          {profile.route_priority === 'scenic'
+                            ? 'Scenic Route'
+                            : profile.route_priority === 'twisty'
+                              ? 'Twisty Roads'
+                              : 'Avoid Highways'}
+                        </Text>
                         {profile.motorcycle_type && (
-                          <Text>Motorcycle Type: {profile.motorcycle_type.charAt(0).toUpperCase() + profile.motorcycle_type.slice(1)}</Text>
+                          <Text>
+                            Motorcycle Type:{' '}
+                            {profile.motorcycle_type.charAt(0).toUpperCase() +
+                              profile.motorcycle_type.slice(1)}
+                          </Text>
                         )}
                       </Space>
                     }
@@ -215,7 +227,12 @@ const GeneratePage = () => {
                   <Form.Item
                     name="route_priority"
                     label="Route Priority"
-                    rules={[{ required: !useProfilePreference, message: 'Please select a route priority' }]}
+                    rules={[
+                      {
+                        required: !useProfilePreference,
+                        message: 'Please select a route priority',
+                      },
+                    ]}
                   >
                     <Select placeholder="Select route priority">
                       <Option value="scenic">Scenic Route</Option>
@@ -224,10 +241,7 @@ const GeneratePage = () => {
                     </Select>
                   </Form.Item>
 
-                  <Form.Item
-                    name="motorcycle_type"
-                    label="Motorcycle Type"
-                  >
+                  <Form.Item name="motorcycle_type" label="Motorcycle Type">
                     <Select placeholder="Select your motorcycle type">
                       <Option value="sport">Sport</Option>
                       <Option value="cruiser">Cruiser</Option>
@@ -248,24 +262,21 @@ const GeneratePage = () => {
                   <Radio.Button value="duration">Duration (hours)</Radio.Button>
                 </Radio.Group>
               </Form.Item>
-              
-              <Form.Item 
+
+              <Form.Item
                 noStyle
-                shouldUpdate={(prevValues, currentValues) => prevValues.distance_type !== currentValues.distance_type}
+                shouldUpdate={(prevValues, currentValues) =>
+                  prevValues.distance_type !== currentValues.distance_type
+                }
               >
-                {({ getFieldValue }) => 
+                {({ getFieldValue }) =>
                   getFieldValue('distance_type') === 'distance' ? (
                     <Form.Item
                       name="distance"
                       rules={[{ required: true, message: 'Please enter a distance' }]}
                       style={{ marginTop: '1rem' }}
                     >
-                      <InputNumber 
-                        min={1} 
-                        max={500} 
-                        addonAfter="km" 
-                        style={{ width: '100%' }}
-                      />
+                      <InputNumber min={1} max={500} addonAfter="km" style={{ width: '100%' }} />
                     </Form.Item>
                   ) : (
                     <Form.Item
@@ -273,11 +284,11 @@ const GeneratePage = () => {
                       rules={[{ required: true, message: 'Please enter a duration' }]}
                       style={{ marginTop: '1rem' }}
                     >
-                      <InputNumber 
-                        min={0.5} 
-                        max={10} 
-                        step={0.5} 
-                        addonAfter="hours" 
+                      <InputNumber
+                        min={0.5}
+                        max={10}
+                        step={0.5}
+                        addonAfter="hours"
                         style={{ width: '100%' }}
                       />
                     </Form.Item>
@@ -287,9 +298,9 @@ const GeneratePage = () => {
             </Form.Item>
 
             <Form.Item>
-              <Button 
-                type="primary" 
-                htmlType="submit" 
+              <Button
+                type="primary"
+                htmlType="submit"
                 icon={<SendOutlined />}
                 loading={generating}
                 size="large"
@@ -303,22 +314,13 @@ const GeneratePage = () => {
 
       {error && (
         <ResultContainer>
-          <Alert
-            message="Error Generating Route"
-            description={error}
-            type="error"
-            showIcon
-          />
+          <Alert message="Error Generating Route" description={error} type="error" showIcon />
         </ResultContainer>
       )}
 
       {result && (
         <ResultContainer>
-          <RouteResult
-            result={result}
-            onSave={handleSaveRoute}
-            saving={saving}
-          />
+          <RouteResult result={result} onSave={handleSaveRoute} saving={saving} />
         </ResultContainer>
       )}
     </GenerateContainer>

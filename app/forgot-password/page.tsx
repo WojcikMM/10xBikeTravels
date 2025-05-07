@@ -22,7 +22,7 @@ const StyledCard = styled(Card)`
   max-width: 450px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   border-radius: 8px;
-  
+
   @media (max-width: 480px) {
     box-shadow: none;
   }
@@ -44,4 +44,4 @@ const ForgotPasswordPage = () => {
   );
 };
 
-export default ForgotPasswordPage; 
+export default ForgotPasswordPage;

@@ -42,52 +42,30 @@ const ForgotPasswordForm = () => {
 
   return (
     <div>
-      {error && (
-        <Alert 
-          message={error} 
-          type="error" 
-          showIcon 
-          style={{ marginBottom: '1rem' }} 
-        />
-      )}
+      {error && <Alert message={error} type="error" showIcon style={{ marginBottom: '1rem' }} />}
 
       {success && (
-        <Alert 
-          message="Password reset email sent. Please check your inbox." 
-          type="success" 
-          showIcon 
-          style={{ marginBottom: '1rem' }} 
+        <Alert
+          message="Password reset email sent. Please check your inbox."
+          type="success"
+          showIcon
+          style={{ marginBottom: '1rem' }}
         />
       )}
 
-      <Form
-        name="forgot-password"
-        layout="vertical"
-        onFinish={onFinish}
-        autoComplete="off"
-      >
+      <Form name="forgot-password" layout="vertical" onFinish={onFinish} autoComplete="off">
         <Form.Item
           name="email"
           rules={[
             { required: true, message: 'Please input your email' },
-            { type: 'email', message: 'Please enter a valid email' }
+            { type: 'email', message: 'Please enter a valid email' },
           ]}
         >
-          <Input 
-            prefix={<MailOutlined />} 
-            placeholder="Email" 
-            size="large" 
-          />
+          <Input prefix={<MailOutlined />} placeholder="Email" size="large" />
         </Form.Item>
 
         <Form.Item>
-          <Button 
-            type="primary" 
-            htmlType="submit" 
-            loading={loading}
-            size="large"
-            block
-          >
+          <Button type="primary" htmlType="submit" loading={loading} size="large" block>
             Send Reset Link
           </Button>
         </Form.Item>
@@ -95,10 +73,7 @@ const ForgotPasswordForm = () => {
 
       <div style={{ textAlign: 'center', marginTop: '1rem' }}>
         <Text type="secondary">Remembered your password?</Text>
-        <Button 
-          type="link" 
-          onClick={() => router.push('/login')}
-        >
+        <Button type="link" onClick={() => router.push('/login')}>
           Back to Login
         </Button>
       </div>
@@ -106,4 +81,4 @@ const ForgotPasswordForm = () => {
   );
 };
 
-export default ForgotPasswordForm; 
+export default ForgotPasswordForm;

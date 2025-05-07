@@ -1,16 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { 
-  Typography, 
-  Card, 
-  Form, 
-  Select, 
-  Input, 
-  Button, 
-  Spin, 
-  message 
-} from 'antd';
+import { Typography, Card, Form, Select, Input, Button, Spin, message } from 'antd';
 import styled from 'styled-components';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { useSupabase } from '@/lib/supabase/provider';
@@ -94,7 +85,8 @@ const ProfilePage = () => {
     <ProfileContainer>
       <Title level={2}>Your Profile</Title>
       <Paragraph>
-        Set your preferences for route generation. These will be used as defaults when creating new routes.
+        Set your preferences for route generation. These will be used as defaults when creating new
+        routes.
       </Paragraph>
 
       <StyledCard>
@@ -124,10 +116,7 @@ const ProfilePage = () => {
               </Select>
             </Form.Item>
 
-            <Form.Item
-              name="motorcycle_type"
-              label="Motorcycle Type"
-            >
+            <Form.Item name="motorcycle_type" label="Motorcycle Type">
               <Select placeholder="Select your motorcycle type">
                 <Option value="sport">Sport</Option>
                 <Option value="cruiser">Cruiser</Option>

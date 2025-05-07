@@ -1,16 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
-import { 
-  Typography, 
-  Card, 
-  Button, 
-  Collapse, 
-  Divider, 
-  Space, 
+import {
+  Typography,
+  Card,
+  Button,
+  Collapse,
+  Divider,
+  Space,
   Tag,
   Descriptions,
-  message
+  message,
 } from 'antd';
 import { SaveOutlined, CopyOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
@@ -55,11 +55,11 @@ interface RouteResultProps {
   viewOnly?: boolean;
 }
 
-const RouteResult: React.FC<RouteResultProps> = ({ 
-  result, 
-  onSave, 
+const RouteResult: React.FC<RouteResultProps> = ({
+  result,
+  onSave,
   saving = false,
-  viewOnly = false
+  viewOnly = false,
 }) => {
   const [copied, setCopied] = useState(false);
 
@@ -69,7 +69,7 @@ const RouteResult: React.FC<RouteResultProps> = ({
       navigator.clipboard.writeText(jsonString);
       setCopied(true);
       message.success('Route points copied to clipboard');
-      
+
       // Reset the copied state after 2 seconds
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
@@ -80,15 +80,19 @@ const RouteResult: React.FC<RouteResultProps> = ({
 
   const getPriorityLabel = (priority?: string) => {
     if (!priority) return null;
-    
-    switch(priority) {
-      case 'scenic': return 'Scenic Route';
-      case 'twisty': return 'Twisty Roads';
-      case 'avoid_highways': return 'Avoid Highways';
-      default: return priority;
+
+    switch (priority) {
+      case 'scenic':
+        return 'Scenic Route';
+      case 'twisty':
+        return 'Twisty Roads';
+      case 'avoid_highways':
+        return 'Avoid Highways';
+      default:
+        return priority;
     }
   };
-  
+
   const getMotorcycleTypeLabel = (type?: string) => {
     if (!type) return null;
     return type.charAt(0).toUpperCase() + type.slice(1);
@@ -99,9 +103,9 @@ const RouteResult: React.FC<RouteResultProps> = ({
       <StyledCard>
         <Title level={2}>{result.title}</Title>
         <Paragraph style={{ fontSize: '16px' }}>{result.summary}</Paragraph>
-        
+
         <Divider />
-        
+
         <Descriptions title="Route Details" bordered column={{ xs: 1, sm: 2, md: 3 }}>
           {result.inputParams?.startPoint && (
             <Descriptions.Item label="Starting Point">
@@ -119,9 +123,7 @@ const RouteResult: React.FC<RouteResultProps> = ({
             </Descriptions.Item>
           )}
           {result.inputParams?.distance && (
-            <Descriptions.Item label="Distance">
-              {result.inputParams.distance} km
-            </Descriptions.Item>
+            <Descriptions.Item label="Distance">{result.inputParams.distance} km</Descriptions.Item>
           )}
           {result.inputParams?.duration && (
             <Descriptions.Item label="Duration">
@@ -130,37 +132,33 @@ const RouteResult: React.FC<RouteResultProps> = ({
           )}
         </Descriptions>
       </StyledCard>
-      
+
       <StyledCard>
         <Title level={4}>Route Points</Title>
-        <Paragraph>
-          Detailed waypoints for your motorcycle journey:
-        </Paragraph>
-        
+        <Paragraph>Detailed waypoints for your motorcycle journey:</Paragraph>
+
         <Collapse defaultActiveKey={['1']}>
           <Panel header="Route JSON Data" key="1">
             <div style={{ position: 'relative' }}>
-              <CopyButton 
-                icon={<CopyOutlined />} 
+              <CopyButton
+                icon={<CopyOutlined />}
                 onClick={handleCopyToClipboard}
-                type={copied ? "primary" : "default"}
+                type={copied ? 'primary' : 'default'}
               >
                 {copied ? 'Copied!' : 'Copy'}
               </CopyButton>
               <RoutePointsContainer>
-                <pre style={{ margin: 0 }}>
-                  {JSON.stringify(result.routePoints, null, 2)}
-                </pre>
+                <pre style={{ margin: 0 }}>{JSON.stringify(result.routePoints, null, 2)}</pre>
               </RoutePointsContainer>
             </div>
           </Panel>
         </Collapse>
-        
+
         {!viewOnly && onSave && (
           <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-            <Button 
-              type="primary" 
-              icon={<SaveOutlined />} 
+            <Button
+              type="primary"
+              icon={<SaveOutlined />}
               size="large"
               onClick={onSave}
               loading={saving}

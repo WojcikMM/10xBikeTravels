@@ -14,26 +14,22 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
   const [client] = useState(() => supabase);
 
   useEffect(() => {
-    const { data: { subscription } } = client.auth.onAuthStateChange(
-      (event) => {
-        if (event === 'SIGNED_IN') {
-          // Handle sign in event
-        } else if (event === 'SIGNED_OUT') {
-          // Handle sign out event
-        }
+    const {
+      data: { subscription },
+    } = client.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_IN') {
+        // Handle sign in event
+      } else if (event === 'SIGNED_OUT') {
+        // Handle sign out event
       }
-    );
+    });
 
     return () => {
       subscription.unsubscribe();
     };
   }, [client]);
 
-  return (
-    <Context.Provider value={{ supabase: client }}>
-      {children}
-    </Context.Provider>
-  );
+  return <Context.Provider value={{ supabase: client }}>{children}</Context.Provider>;
 }
 
 export const useSupabase = () => {
