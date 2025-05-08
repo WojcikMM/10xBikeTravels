@@ -78,4 +78,4 @@ global.WritableStream = class WritableStream {
       ready: Promise.resolve(),
     };
   }
-}; 
+};

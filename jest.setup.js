@@ -14,7 +14,7 @@ afterAll(() => server.close());
 // Polyfill for Next.js environment
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
-  value: jest.fn().mockImplementation(query => ({
+  value: jest.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,
@@ -59,4 +59,4 @@ jest.mock('next/navigation', () => ({
   }),
   usePathname: () => '/',
   useSearchParams: () => new URLSearchParams(),
-})); 
+}));

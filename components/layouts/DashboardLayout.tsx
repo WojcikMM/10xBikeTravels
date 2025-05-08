@@ -125,8 +125,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           top: 0,
           bottom: 0,
           zIndex: 2,
-        }}
-      >
+        }}>
         <Logo>{!collapsed && 'MotoTrail'}</Logo>
         <Menu theme="dark" mode="inline" selectedKeys={getSelectedKeys()} items={items} />
       </Sider>

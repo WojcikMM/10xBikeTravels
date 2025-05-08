@@ -5,11 +5,7 @@ module.exports = {
   },
   setupFiles: ['<rootDir>/jest.polyfills.js'],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-  testPathIgnorePatterns: [
-    '<rootDir>/.next/',
-    '<rootDir>/node_modules/',
-    '<rootDir>/public/',
-  ],
+  testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/', '<rootDir>/public/'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
     // Handle CSS imports (with CSS modules)
@@ -22,13 +18,10 @@ module.exports = {
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
   },
-  transformIgnorePatterns: [
-    '/node_modules/',
-    '^.+\\.module\\.(css|sass|scss)$',
-  ],
+  transformIgnorePatterns: ['/node_modules/', '^.+\\.module\\.(css|sass|scss)$'],
   moduleDirectories: ['node_modules', '<rootDir>'],
   testMatch: [
     '**/__tests__/**/*.(spec|test).(js|jsx|ts|tsx)',
     '**/?(*.)+(spec|test).(js|jsx|ts|tsx)',
   ],
-}; 
+};

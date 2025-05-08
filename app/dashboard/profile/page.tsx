@@ -102,13 +102,11 @@ const ProfilePage = () => {
             initialValues={{
               route_priority: 'scenic',
               motorcycle_type: 'standard',
-            }}
-          >
+            }}>
             <Form.Item
               name="route_priority"
               label="Preferred Route Priority"
-              rules={[{ required: true, message: 'Please select a route priority' }]}
-            >
+              rules={[{ required: true, message: 'Please select a route priority' }]}>
               <Select placeholder="Select your preferred route priority">
                 <Option value="scenic">Scenic Route</Option>
                 <Option value="twisty">Twisty Roads</Option>

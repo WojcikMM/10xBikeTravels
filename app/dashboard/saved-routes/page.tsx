@@ -198,8 +198,7 @@ const SavedRoutesPage = () => {
                   <Button
                     type="primary"
                     onClick={() => handleViewDetails(route.id)}
-                    icon={<RightOutlined />}
-                  >
+                    icon={<RightOutlined />}>
                     View Details
                   </Button>
                   <Popconfirm
@@ -207,8 +206,7 @@ const SavedRoutesPage = () => {
                     description="Are you sure you want to delete this route? This action cannot be undone."
                     onConfirm={() => handleDelete(route.id)}
                     okText="Yes"
-                    cancelText="No"
-                  >
+                    cancelText="No">
                     <Button danger icon={<DeleteOutlined />} loading={deleting === route.id}>
                       Delete
                     </Button>

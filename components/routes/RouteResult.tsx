@@ -143,8 +143,7 @@ const RouteResult: React.FC<RouteResultProps> = ({
               <CopyButton
                 icon={<CopyOutlined />}
                 onClick={handleCopyToClipboard}
-                type={copied ? 'primary' : 'default'}
-              >
+                type={copied ? 'primary' : 'default'}>
                 {copied ? 'Copied!' : 'Copy'}
               </CopyButton>
               <RoutePointsContainer>
@@ -161,8 +160,7 @@ const RouteResult: React.FC<RouteResultProps> = ({
               icon={<SaveOutlined />}
               size="large"
               onClick={onSave}
-              loading={saving}
-            >
+              loading={saving}>
               Save This Route
             </Button>
           </div>

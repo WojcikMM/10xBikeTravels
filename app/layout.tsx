@@ -28,8 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 colorInfo: '#1890ff',
                 borderRadius: 6,
               },
-            }}
-          >
+            }}>
             <SupabaseProvider>
               <AuthProvider>{children}</AuthProvider>
             </SupabaseProvider>

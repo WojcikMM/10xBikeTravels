@@ -44,10 +44,11 @@ const RegisterForm = () => {
       // Show success notification and redirect to login page
       notification.success({
         message: 'Registration Successful',
-        description: 'Your account has been created. Please check your email to confirm your account.',
+        description:
+          'Your account has been created. Please check your email to confirm your account.',
         placement: 'top',
       });
-      
+
       router.push('/login?registration=success');
     } catch (error: any) {
       console.error('Registration error:', error);
@@ -69,8 +70,7 @@ const RegisterForm = () => {
           rules={[
             { required: true, message: 'Please input your email' },
             { type: 'email', message: 'Please enter a valid email' },
-          ]}
-        >
+          ]}>
           <Input prefix={<MailOutlined />} placeholder="Email" size="large" />
         </Form.Item>
 
@@ -79,8 +79,7 @@ const RegisterForm = () => {
           rules={[
             { required: true, message: 'Please input your password' },
             { min: 6, message: 'Password must be at least 6 characters' },
-          ]}
-        >
+          ]}>
           <Input.Password prefix={<LockOutlined />} placeholder="Password" size="large" />
         </Form.Item>
 
@@ -97,8 +96,7 @@ const RegisterForm = () => {
                 return Promise.reject(new Error('The two passwords do not match'));
               },
             }),
-          ]}
-        >
+          ]}>
           <Input.Password prefix={<LockOutlined />} placeholder="Confirm Password" size="large" />
         </Form.Item>
 

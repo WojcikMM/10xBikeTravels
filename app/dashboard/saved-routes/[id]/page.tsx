@@ -100,8 +100,7 @@ const RouteDetailPage = () => {
       <Button
         icon={<ArrowLeftOutlined />}
         onClick={() => router.back()}
-        style={{ marginBottom: '1rem' }}
-      >
+        style={{ marginBottom: '1rem' }}>
         Back to Saved Routes
       </Button>
 

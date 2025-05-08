@@ -32,7 +32,7 @@ const ForgotPasswordForm = () => {
         description: 'Please check your inbox for instructions to reset your password.',
         placement: 'top',
       });
-      
+
       // Clear the form
       const form = document.querySelector('form[name="forgot-password"]') as HTMLFormElement;
       if (form) form.reset();
@@ -56,8 +56,7 @@ const ForgotPasswordForm = () => {
           rules={[
             { required: true, message: 'Please input your email' },
             { type: 'email', message: 'Please enter a valid email' },
-          ]}
-        >
+          ]}>
           <Input prefix={<MailOutlined />} placeholder="Email" size="large" />
         </Form.Item>
 
