@@ -22,7 +22,24 @@
   zapewniające wysoką efektywność i niskie koszta
 - Pozwala na ustawianie limitów finansowych na klucze API
 
+# Testing
+
+- Jest jako podstawowy framework testowy:
+- Zapewnia środowisko do uruchamiania testów jednostkowych, integracyjnych i end-to-end
+- Obsługuje testy asynchroniczne i mocking
+- Generuje raporty pokrycia kodu
+
+- React Testing Library do testowania komponentów:
+- Pozwala testować komponenty React w sposób skupiony na interakcjach użytkownika
+- Promuje testowanie zachowania zamiast implementacji
+- Integruje się z Jest dla pełnego doświadczenia testowego
+
+- Mock Service Worker (MSW) do mockowania API:
+- Przechwytuje rzeczywiste żądania sieciowe na poziomie sieci
+- Pozwala symulować różne scenariusze odpowiedzi API bez modyfikowania kodu aplikacji
+- Działa zarówno w środowisku przeglądarki jak i Node.js
+
 # CI/CD i Hosting:
 
-- Github Actions do tworzenia pipeline’ów CI/CD
+- Github Actions do tworzenia pipeline'ów CI/CD
 - DigitalOcean do hostowania aplikacji za pośrednictwem obrazu docker
