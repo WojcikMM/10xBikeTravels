@@ -5,6 +5,14 @@ on:
     branches:
       - master
 
+env:
+  NEXT_PUBLIC_SUPABASE_URL: '' #TODO: Fill with github secrets
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: '' #TODO: Fill with github secrets
+  NEXT_PUBLIC_OPENROUTER_KEY: '' #TODO: Fill with github secrets
+  NEXT_PUBLIC_OPENROUTER_API_URL: '' #TODO: Fill with github secrets
+  NEXT_PUBLIC_OPENROUTER_MODEL: '' #TODO: Fill with github secrets
+  NEXT_PUBLIC_OPENROUTER_APP_URL: '' #TODO: Fill with github secrets
+
 jobs:
   build:
     runs-on: ubuntu-latest
