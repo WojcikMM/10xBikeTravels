@@ -15,13 +15,6 @@ export default async function DashboardLayoutWrapper({ children }: { children: R
   // Get the session
   const { data, error } = await supabase.auth.getSession();
 
-  // For debugging purposes
-  console.log(
-    'Server cookies:',
-    cookieList.map((c) => ({ name: c.name, value: c.value.substring(0, 10) + '...' }))
-  );
-  console.log('Session data:', data);
-
   // If there was an error or no session, redirect to login
   if (error || !data.session) {
     console.error('Auth error or no session:', error);
