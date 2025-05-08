@@ -1,4 +1,11 @@
-import { OpenRouterService, GenerateRouteParams } from '../../../lib/ai/openrouter-service';
+import {
+  OpenRouterService,
+  GenerateRouteParams,
+  OpenRouterError,
+  RouteGenerationError,
+} from '../../../lib/ai/openrouter-service';
+import { server } from '../../mocks/server/server';
+import { http, HttpResponse } from 'msw';
 
 // Use environment variables similar to the actual implementation
 const mockConfig = {
@@ -17,7 +24,9 @@ describe('OpenRouterService', () => {
       mockConfig.apiKey,
       mockConfig.apiUrl,
       mockConfig.modelName,
-      mockConfig.webAppUrl
+      mockConfig.webAppUrl,
+      1, // Set max retries to 1 for faster tests
+      100 // Set retry delay to 100ms for faster tests
     );
   });
 
@@ -68,5 +77,91 @@ describe('OpenRouterService', () => {
     expect(firstPoint.coordinates).toHaveProperty('lng');
   });
 
-  // More tests would be added here for error cases, timeout handling, etc.
+  it('should handle API errors gracefully', async () => {
+    // Override the default MSW handler for this test only
+    server.use(
+      http.post(mockConfig.apiUrl, () => {
+        return new HttpResponse(
+          JSON.stringify({
+            error: {
+              message: 'Rate limit exceeded',
+              code: 'rate_limit_exceeded',
+            },
+          }),
+          { status: 429 }
+        );
+      })
+    );
+
+    const params: GenerateRouteParams = {
+      startPoint: 'Warsaw',
+      routePriority: 'scenic',
+      distance: 200,
+    };
+
+    // The API error should propagate as an OpenRouterError or similar error
+    await expect(openRouterService.generateRoute(params)).rejects.toThrow();
+  }, 10000); // Increase timeout to 10 seconds
+
+  it('should handle invalid JSON response format', async () => {
+    // Override the default MSW handler for this test only
+    server.use(
+      http.post(mockConfig.apiUrl, () => {
+        return HttpResponse.json({
+          choices: [
+            {
+              message: {
+                content: 'This is not valid JSON format',
+              },
+            },
+          ],
+        });
+      })
+    );
+
+    const params: GenerateRouteParams = {
+      startPoint: 'Warsaw',
+      routePriority: 'scenic',
+      distance: 200,
+    };
+
+    // Expect any error related to JSON parsing or validation
+    await expect(openRouterService.generateRoute(params)).rejects.toThrow();
+  });
+
+  it('should handle non-Poland coordinates correctly', async () => {
+    // Override the default MSW handler for this test only
+    server.use(
+      http.post(mockConfig.apiUrl, () => {
+        return HttpResponse.json({
+          choices: [
+            {
+              message: {
+                content: JSON.stringify({
+                  title: 'Invalid Route',
+                  summary: 'Route with coordinates outside Poland',
+                  routePoints: [
+                    {
+                      name: 'Outside Poland',
+                      description: 'This point is outside Poland',
+                      coordinates: { lat: 40.7128, lng: -74.006 }, // New York coordinates
+                    },
+                  ],
+                }),
+              },
+            },
+          ],
+        });
+      })
+    );
+
+    const params: GenerateRouteParams = {
+      startPoint: 'Warsaw',
+      routePriority: 'scenic',
+      distance: 200,
+    };
+
+    // Expect any error related to coordinate validation
+    await expect(openRouterService.generateRoute(params)).rejects.toThrow();
+  });
 });
