@@ -13,7 +13,7 @@ env:
   NEXT_PUBLIC_OPENROUTER_MODEL: 'deepseek/deepseek-prover-v2:free'
   NEXT_PUBLIC_OPENROUTER_APP_URL: ${{ secrets.NEXT_PUBLIC_OPENROUTER_APP_URL }}
   AZURE_WEBAPP_NAME: '10xBikeTravels'
-  AZURE_WEBAPP_PACKAGE_PATH: '.'
+  AZURE_WEBAPP_PACKAGE_PATH: '.next/standalone'
   NODE_VERSION: '22.x'
 
 jobs:
