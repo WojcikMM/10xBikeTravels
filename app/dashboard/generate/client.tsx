@@ -66,12 +66,12 @@ const GenerateClient = ({
   const router = useRouter();
   const { supabase } = useSupabase();
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [error] = useState<string | null>(initialError);
-  const [result] = useState<any>(initialResult);
+  const [error, setError] = useState<string | null>(initialError);
+  const [result, setResult] = useState<any>(initialResult);
   const [useProfilePreference, setUseProfilePreference] = useState(hasProfileData);
 
-  
   React.useEffect(() => {
     form.setFieldsValue({
       start_point: searchParams.start_point || '',
@@ -84,25 +84,78 @@ const GenerateClient = ({
   }, [form, searchParams]);
 
   const onFinish = async (values: any) => {
-    const routePriority =
-      useProfilePreference && profileData?.route_priority
-        ? profileData.route_priority
-        : values.route_priority;
-
-    const motorcycleType =
-      useProfilePreference && profileData?.motorcycle_type
-        ? profileData.motorcycle_type
-        : values.motorcycle_type;
-
-    let url = `?start_point=${encodeURIComponent(values.start_point)}&route_priority=${routePriority}&motorcycle_type=${motorcycleType}&distance_type=${values.distance_type}&generate=true`;
+    setLoading(true);
+    setError(null);
     
-    if (values.distance_type === 'distance') {
-      url += `&distance=${values.distance}`;
-    } else {
-      url += `&duration=${values.duration}`;
+    try {
+      const routePriority =
+        useProfilePreference && profileData?.route_priority
+          ? profileData.route_priority
+          : values.route_priority;
+
+      const motorcycleType =
+        useProfilePreference && profileData?.motorcycle_type
+          ? profileData.motorcycle_type
+          : values.motorcycle_type;
+
+      // Prepare the request body for API
+      const requestBody = {
+        startPoint: values.start_point,
+        routePriority,
+        motorcycleType,
+        distance: null,
+        duration: null
+      };
+
+      // Add either distance or duration based on selection
+      if (values.distance_type === 'distance') {
+        requestBody['distance'] = values.distance;
+      } else {
+        requestBody['duration'] = values.duration;
+      }
+
+      console.log('Sending route generation request:', requestBody);
+
+      // Call API endpoint
+      const response = await fetch('/api/routes/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || data.error || 'Failed to generate route');
+      }
+
+      // Update result with generated route data
+      console.log('Received route data:', data);
+      setResult({
+        ...data.data,
+        inputParams: requestBody,
+      });
+      
+      // Add search params to URL for sharing/reloading
+      let url = `?start_point=${encodeURIComponent(values.start_point)}&route_priority=${routePriority}&motorcycle_type=${motorcycleType}&distance_type=${values.distance_type}`;
+      
+      if (values.distance_type === 'distance') {
+        url += `&distance=${values.distance}`;
+      } else {
+        url += `&duration=${values.duration}`;
+      }
+      
+      // Update URL without refreshing page
+      window.history.pushState({}, '', url);
+      
+    } catch (err: any) {
+      console.error('Error generating route:', err);
+      setError(err.message || 'Failed to generate route. Please try again.');
+    } finally {
+      setLoading(false);
     }
-    
-    router.push(url);
   };
 
   const handleSaveRoute = async () => {
@@ -219,7 +272,7 @@ const GenerateClient = ({
                   rules={[
                     {
                       required: !useProfilePreference,
-                      message: 'Proszę wybrać priorytet trasy',
+                      message: 'Please select a route priority',
                     },
                   ]}>
                   <Select placeholder="Select route priority">
@@ -229,25 +282,25 @@ const GenerateClient = ({
                   </Select>
                 </Form.Item>
 
-                <Form.Item name="motorcycle_type" label="Typ motocykla">
-                  <Select placeholder="Wybierz typ swojego motocykla">
-                    <Option value="sport">Sportowy</Option>
+                <Form.Item name="motorcycle_type" label="Motorcycle Type">
+                  <Select placeholder="Select your motorcycle type">
+                    <Option value="sport">Sport</Option>
                     <Option value="cruiser">Cruiser</Option>
-                    <Option value="touring">Turystyczny</Option>
+                    <Option value="touring">Touring</Option>
                     <Option value="adventure">Adventure</Option>
-                    <Option value="standard">Standardowy</Option>
-                    <Option value="other">Inny</Option>
+                    <Option value="standard">Standard</Option>
+                    <Option value="other">Other</Option>
                   </Select>
                 </Form.Item>
               </>
             )}
           </Form.Item>
 
-          <Form.Item label="Dystans lub czas trwania">
+          <Form.Item label="Distance or Duration">
             <Form.Item name="distance_type" noStyle>
               <Radio.Group>
-                <Radio.Button value="distance">Dystans (km)</Radio.Button>
-                <Radio.Button value="duration">Czas trwania (godziny)</Radio.Button>
+                <Radio.Button value="distance">Distance (km)</Radio.Button>
+                <Radio.Button value="duration">Duration (hours)</Radio.Button>
               </Radio.Group>
             </Form.Item>
 
@@ -260,20 +313,20 @@ const GenerateClient = ({
                 getFieldValue('distance_type') === 'distance' ? (
                   <Form.Item
                     name="distance"
-                    rules={[{ required: true, message: 'Proszę podać dystans' }]}
+                    rules={[{ required: true, message: 'Please enter a distance' }]}
                     style={{ marginTop: '1rem' }}>
                     <InputNumber min={1} max={500} addonAfter="km" style={{ width: '100%' }} />
                   </Form.Item>
                 ) : (
                   <Form.Item
                     name="duration"
-                    rules={[{ required: true, message: 'Proszę podać czas trwania' }]}
+                    rules={[{ required: true, message: 'Please enter a duration' }]}
                     style={{ marginTop: '1rem' }}>
                     <InputNumber
                       min={0.5}
                       max={10}
                       step={0.5}
-                      addonAfter="godziny"
+                      addonAfter="hours"
                       style={{ width: '100%' }}
                     />
                   </Form.Item>
@@ -286,21 +339,33 @@ const GenerateClient = ({
             <Button
               type="primary"
               htmlType="submit"
+              loading={loading}
               icon={<SendOutlined />}
               size="large">
-              Generuj trasę
+              Generate Route
             </Button>
           </Form.Item>
         </Form>
       </StyledCard>
 
-      {error && (
+      {loading && (
         <ResultContainer>
-          <Alert message="Błąd generowania trasy" description={error} type="error" showIcon />
+          <div style={{ textAlign: 'center', padding: '2rem' }}>
+            <Spin size="large" />
+            <div style={{ marginTop: '1rem' }}>
+              <Text>Generating your route... This may take a moment.</Text>
+            </div>
+          </div>
         </ResultContainer>
       )}
 
-      {result && (
+      {error && (
+        <ResultContainer>
+          <Alert message="Error Generating Route" description={error} type="error" showIcon />
+        </ResultContainer>
+      )}
+
+      {result && !loading && (
         <ResultContainer>
           <RouteResult result={result} onSave={handleSaveRoute} saving={saving} />
         </ResultContainer>
