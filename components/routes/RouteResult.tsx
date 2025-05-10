@@ -9,15 +9,24 @@ import {
   Descriptions,
   message,
   Tabs,
+  Tooltip,
 } from 'antd';
-import { SaveOutlined, CopyOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import { 
+  SaveOutlined, 
+  CopyOutlined, 
+  EnvironmentOutlined, 
+  GoogleOutlined,
+  ShareAltOutlined
+} from '@ant-design/icons';
 import styled from 'styled-components';
 import dynamic from 'next/dynamic';
 import { RoutePoint } from '@/lib/ai/openrouter-service';
+import { createGoogleMapsUrl } from '@/lib/map-utils';
 
 const { Title, Paragraph } = Typography;
 const { TabPane } = Tabs;
 
+// Dynamically import the map component to prevent SSR issues
 const RouteMap = dynamic(() => import('./RouteMap'), {
   ssr: false,
   loading: () => <div style={{ height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Loading map...</div>,
@@ -40,6 +49,13 @@ const CopyButton = styled(Button)`
   position: absolute;
   top: 12px;
   right: 12px;
+`;
+
+const ActionButtonsContainer = styled.div`
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 `;
 
 interface RouteResultProps {
@@ -81,6 +97,57 @@ const RouteResult: React.FC<RouteResultProps> = ({
       console.error('Failed to copy:', error);
       message.error('Failed to copy to clipboard');
     }
+  };
+
+  const handleOpenInGoogleMaps = () => {
+    try {
+      const googleMapsUrl = createGoogleMapsUrl(result.routePoints);
+      
+      if (!googleMapsUrl) {
+        message.error('Unable to create Google Maps URL. Route may be invalid.');
+        return;
+      }
+      
+      // Open Google Maps in a new tab
+      window.open(googleMapsUrl, '_blank');
+    } catch (error) {
+      console.error('Failed to open Google Maps:', error);
+      message.error('Failed to open route in Google Maps');
+    }
+  };
+
+  const handleShareRoute = () => {
+    try {
+      const googleMapsUrl = createGoogleMapsUrl(result.routePoints);
+      
+      if (navigator.share && googleMapsUrl) {
+        navigator.share({
+          title: result.title,
+          text: result.summary,
+          url: googleMapsUrl,
+        })
+        .then(() => message.success('Route shared successfully'))
+        .catch((error) => {
+          console.error('Error sharing route:', error);
+          // Fall back to copying URL if sharing fails
+          copyUrlToClipboard(googleMapsUrl);
+        });
+      } else if (googleMapsUrl) {
+        // Fallback for browsers without Web Share API
+        copyUrlToClipboard(googleMapsUrl);
+      } else {
+        message.error('Unable to share route. Route may be invalid.');
+      }
+    } catch (error) {
+      console.error('Failed to share route:', error);
+      message.error('Failed to share route');
+    }
+  };
+
+  const copyUrlToClipboard = (url: string) => {
+    navigator.clipboard.writeText(url)
+      .then(() => message.success('Route URL copied to clipboard'))
+      .catch(() => message.error('Failed to copy URL to clipboard'));
   };
 
   const getPriorityLabel = (priority?: string) => {
@@ -136,6 +203,28 @@ const RouteResult: React.FC<RouteResultProps> = ({
             </Descriptions.Item>
           )}
         </Descriptions>
+
+        <ActionButtonsContainer>
+          <Tooltip title="Open in Google Maps">
+            <Button 
+              icon={<GoogleOutlined />} 
+              onClick={handleOpenInGoogleMaps}
+              type="default"
+            >
+              Open in Google Maps
+            </Button>
+          </Tooltip>
+
+          <Tooltip title="Share Route">
+            <Button 
+              icon={<ShareAltOutlined />} 
+              onClick={handleShareRoute}
+              type="default"
+            >
+              Share Route
+            </Button>
+          </Tooltip>
+        </ActionButtonsContainer>
       </StyledCard>
 
       <StyledCard>
