@@ -26,7 +26,7 @@ interface RouteMapProps {
 
 const RouteMap: React.FC<RouteMapProps> = ({ routePoints }) => {
   if (!routePoints || routePoints.length === 0) {
-    return <div>Brak punktów trasy do wyświetlenia.</div>;
+    return <div>No route points to display.</div>;
   }
 
   useEffect(() => {
@@ -67,7 +67,7 @@ const RouteMap: React.FC<RouteMapProps> = ({ routePoints }) => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         
-        {/* Linia trasy */}
+        {/* Route line */}
         <Polyline 
           positions={polylinePositions as [number, number][]} 
           color="blue" 
