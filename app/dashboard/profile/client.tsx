@@ -27,7 +27,7 @@ interface ProfileClientProps {
 export default function ProfileClient({ userId, initialProfileData }: ProfileClientProps) {
   const { supabase } = useSupabase();
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [saving, setSaving] = useState(false);
 
   if (initialProfileData) {

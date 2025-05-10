@@ -56,7 +56,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const { user, signOut } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
-  const [mobileVisible, setMobileVisible] = useState(false);
 
   const handleSignOut = async () => {
     await signOut();

@@ -25,10 +25,6 @@ interface RouteMapProps {
 }
 
 const RouteMap: React.FC<RouteMapProps> = ({ routePoints }) => {
-  if (!routePoints || routePoints.length === 0) {
-    return <div>No route points to display.</div>;
-  }
-
   useEffect(() => {
     if (typeof window !== 'undefined') {
       // @ts-ignore
@@ -41,13 +37,17 @@ const RouteMap: React.FC<RouteMapProps> = ({ routePoints }) => {
     }
   }, []);
 
+  if (!routePoints || routePoints.length === 0) {
+    return <div>No route points to display.</div>;
+  }
+
   const getMapCenter = () => {
     const lats = routePoints.map((point) => point.coordinates.lat);
     const lngs = routePoints.map((point) => point.coordinates.lng);
-    
+
     const avgLat = lats.reduce((a, b) => a + b, 0) / lats.length;
     const avgLng = lngs.reduce((a, b) => a + b, 0) / lngs.length;
-    
+
     return [avgLat, avgLng];
   };
 
@@ -58,28 +58,22 @@ const RouteMap: React.FC<RouteMapProps> = ({ routePoints }) => {
 
   return (
     <MapWrapper>
-      <MapContainer 
-        center={getMapCenter() as [number, number]} 
-        zoom={10} 
-        scrollWheelZoom={true}>
+      <MapContainer center={getMapCenter() as [number, number]} zoom={10} scrollWheelZoom={true}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        
+
         {/* Route line */}
-        <Polyline 
-          positions={polylinePositions as [number, number][]} 
-          color="blue" 
-          weight={3} 
-          opacity={0.7} 
+        <Polyline
+          positions={polylinePositions as [number, number][]}
+          color="blue"
+          weight={3}
+          opacity={0.7}
         />
-        
+
         {routePoints.map((point, index) => (
-          <Marker 
-            key={index} 
-            position={[point.coordinates.lat, point.coordinates.lng]}
-          >
+          <Marker key={index} position={[point.coordinates.lat, point.coordinates.lng]}>
             <Popup>
               <div>
                 <strong>{point.name}</strong>

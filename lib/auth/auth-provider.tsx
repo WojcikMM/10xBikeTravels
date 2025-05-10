@@ -1,7 +1,6 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useSupabase } from '@/lib/supabase/provider';
 import { Session, User } from '@supabase/supabase-js';
 
@@ -23,7 +22,6 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { supabase } = useSupabase();
-  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
@@ -63,7 +61,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signOut = async () => {
     try {
       await supabase.auth.signOut();
-      // Use window.location for a full page reload to ensure server sees the change
+      // Use window.location for a full page reload to ensure the server sees the change
       window.location.href = '/login';
     } catch (error) {
       console.error('Error signing out:', error);

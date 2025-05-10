@@ -5,6 +5,7 @@ import { ConfigProvider } from 'antd';
 import { SupabaseProvider } from '@/lib/supabase/provider';
 import { AuthProvider } from '@/lib/auth/auth-provider';
 import StyledComponentsRegistry from '@/lib/styled-components-registry';
+import { ReactNode } from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
   description: 'Generate exciting motorcycle routes in Poland',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body className={inter.className}>

@@ -1,9 +1,7 @@
 import {
   OpenRouterService,
   GenerateRouteParams,
-  OpenRouterError,
-  RouteGenerationError,
-} from '../../../lib/ai/openrouter-service';
+} from '@/lib/ai/openrouter-service';
 import { server } from '../../mocks/server/server';
 import { http, HttpResponse } from 'msw';
 
@@ -26,7 +24,7 @@ describe('OpenRouterService', () => {
       mockConfig.modelName,
       mockConfig.webAppUrl,
       1, // Set max retries to 1 for faster tests
-      100 // Set retry delay to 100ms for faster tests
+      100 // Set retry delay to 100 ms for faster tests
     );
   });
 
@@ -36,7 +34,7 @@ describe('OpenRouterService', () => {
   });
 
   it('should throw an error if required config is missing', () => {
-    // Test that the service validates required configuration
+    // Test that the service validates the required configuration
     expect(
       () => new OpenRouterService('', mockConfig.apiUrl, mockConfig.modelName, mockConfig.webAppUrl)
     ).toThrow();

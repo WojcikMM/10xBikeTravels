@@ -1,7 +1,6 @@
 import {cookies} from 'next/headers';
 import {createServerComponentClient} from '@supabase/auth-helpers-nextjs';
 import {redirect} from 'next/navigation';
-import {generateRoute} from '@/lib/ai/route-generator';
 import GenerateClient from './client';
 
 export default async function GeneratePage() {

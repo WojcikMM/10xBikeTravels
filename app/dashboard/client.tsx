@@ -46,8 +46,7 @@ interface DashboardClientProps {
   displayName: string;
 }
 
-// Komponent kliencki z UI dashboardu
-export default function DashboardClient({ initialUserEmail, displayName }: DashboardClientProps) {
+export default function DashboardClient({ displayName }: DashboardClientProps) {
   return (
     <DashboardContainer>
       <div>

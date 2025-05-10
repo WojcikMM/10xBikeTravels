@@ -1,25 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import {
-  Typography,
-  Card,
-  Button,
-  Spin,
-  Divider,
-  Space,
-  Tag,
-  Descriptions,
-  Alert,
-  message,
-  Breadcrumb,
-} from 'antd';
-import {
-  ArrowLeftOutlined,
-  EnvironmentOutlined,
-  RocketOutlined,
-  ClockCircleOutlined,
-} from '@ant-design/icons';
+import { Button, Spin, Alert, Breadcrumb } from 'antd';
+import { ArrowLeftOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
@@ -27,17 +10,10 @@ import { useAuth } from '@/lib/auth/auth-provider';
 import { useSupabase } from '@/lib/supabase/provider';
 import RouteResult from '@/components/routes/RouteResult';
 
-const { Title, Paragraph, Text } = Typography;
-
 const RouteDetailContainer = styled.div`
   max-width: 1000px;
   margin: 0 auto;
   padding: 2rem 1rem;
-`;
-
-const StyledCard = styled(Card)`
-  margin-top: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 `;
 
 const RouteDetailPage = () => {

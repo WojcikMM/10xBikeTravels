@@ -1,14 +1,12 @@
 import { redirect } from 'next/navigation';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 import { createServerClient } from '@/lib/supabase/server';
-import { cookies } from 'next/headers';
+import { ReactNode } from 'react';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export default async function DashboardLayoutWrapper({ children }: { children: React.ReactNode }) {
-  const cookieList = cookies().getAll();
-
+export default async function DashboardLayoutWrapper({ children }: { children: ReactNode }) {
   // Create the server client with cookies
   const supabase = createServerClient();
 

@@ -3,9 +3,8 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, Typography, notification } from 'antd';
 import { useRouter } from 'next/navigation';
-import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
+import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { useSupabase } from '@/lib/supabase/provider';
-import Link from 'next/link';
 
 const { Text } = Typography;
 
