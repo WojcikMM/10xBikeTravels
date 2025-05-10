@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { generateRoute } from '@/lib/ai/route-generator';
+import {NextRequest, NextResponse} from 'next/server';
 import { z } from 'zod';
+import {openRouterService} from "@/lib/ai/openrouter-config";
 
 // Define schema for request validation
 const routeRequestSchema = z.object({
@@ -39,7 +39,8 @@ export async function POST(request: NextRequest) {
 
     // Generate route
     console.log('Generating route with params:', result.data);
-    const routeResult = await generateRoute({
+    
+    const routeResult = await openRouterService.generateRoute({
       startPoint,
       routePriority,
       motorcycleType,

@@ -10,14 +10,13 @@ import {
   InputNumber,
   Button,
   Spin,
-  Divider,
   Radio,
   message,
   Alert,
   Space,
-  Result,
+  
 } from 'antd';
-import { SendOutlined, SaveOutlined, ReloadOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { SendOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { useSupabase } from '@/lib/supabase/provider';
@@ -52,7 +51,6 @@ interface GenerateClientProps {
   hasProfileData: boolean;
   initialResult: any;
   initialError: string | null;
-  searchParams: any;
 }
 
 const GenerateClient = ({ 
@@ -60,8 +58,7 @@ const GenerateClient = ({
   profileData, 
   hasProfileData, 
   initialResult, 
-  initialError,
-  searchParams
+  initialError
 }: GenerateClientProps) => {
   const router = useRouter();
   const { supabase } = useSupabase();
@@ -74,14 +71,14 @@ const GenerateClient = ({
 
   React.useEffect(() => {
     form.setFieldsValue({
-      start_point: searchParams.start_point || '',
-      route_priority: searchParams.route_priority || 'scenic',
-      motorcycle_type: searchParams.motorcycle_type || 'standard',
-      distance_type: searchParams.distance_type || 'distance',
-      distance: searchParams.distance ? parseInt(searchParams.distance) : 150,
-      duration: searchParams.duration ? parseFloat(searchParams.duration) : 2,
+      start_point:  '',
+      route_priority:  'scenic',
+      motorcycle_type:  'standard',
+      distance_type:  'distance',
+      distance:  150,
+      duration: undefined
     });
-  }, [form, searchParams]);
+  }, [form]);
 
   const onFinish = async (values: any) => {
     setLoading(true);
@@ -103,8 +100,8 @@ const GenerateClient = ({
         startPoint: values.start_point,
         routePriority,
         motorcycleType,
-        distance: null,
-        duration: null
+        distance: undefined,
+        duration: undefined
       };
 
       // Add either distance or duration based on selection
@@ -147,7 +144,7 @@ const GenerateClient = ({
         url += `&duration=${values.duration}`;
       }
       
-      // Update URL without refreshing page
+      // Update URL without refreshing the page
       window.history.pushState({}, '', url);
       
     } catch (err: any) {
