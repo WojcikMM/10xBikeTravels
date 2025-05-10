@@ -8,6 +8,16 @@ on:
     branches:
       - master
   workflow_dispatch:
+env:
+  NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+  NEXT_PUBLIC_OPENROUTER_KEY: ${{ secrets.NEXT_PUBLIC_OPENROUTER_KEY }}
+  NEXT_PUBLIC_OPENROUTER_API_URL: 'https://openrouter.ai/api/v1/chat/completions'
+  NEXT_PUBLIC_OPENROUTER_MODEL: 'deepseek/deepseek-prover-v2:free'
+  NEXT_PUBLIC_OPENROUTER_APP_URL: ${{ secrets.NEXT_PUBLIC_OPENROUTER_APP_URL }}
+  AZURE_WEBAPP_NAME: '10xBikeTravels'
+  AZURE_WEBAPP_PACKAGE_PATH: '.next'
+  NODE_VERSION: '22.x'
 
 jobs:
   build:
@@ -44,7 +54,7 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
@@ -53,7 +63,7 @@ jobs:
 
       - name: Unzip artifact for deployment
         run: unzip release.zip
-      
+
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
@@ -61,4 +71,4 @@ jobs:
           app-name: '10xbiketravels'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_57B42E7CEF8540CAA8D14A5F54061A28 }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
