@@ -1,47 +1,21 @@
-'use client';
+import { cookies } from 'next/headers';
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { redirect } from 'next/navigation';
+import LoginClient from './client';
 
-import React from 'react';
-import { Card, Typography } from 'antd';
-import styled from 'styled-components';
-import LoginForm from '@/components/auth/LoginForm';
-
-const { Title, Paragraph } = Typography;
-
-const LoginContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 2rem;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-`;
-
-const StyledCard = styled(Card)`
-  width: 100%;
-  max-width: 450px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  border-radius: 8px;
-
-  @media (max-width: 480px) {
-    box-shadow: none;
+// Komponent serwerowy do sprawdzania sesji i przekierowań
+export default async function LoginPage() {
+  // Sprawdź stan uwierzytelnienia po stronie serwera
+  const cookieStore = cookies();
+  const supabase = createServerComponentClient({ cookies: () => cookieStore });
+  
+  const { data: { session } } = await supabase.auth.getSession();
+  
+  // Jeśli użytkownik jest już zalogowany, przekieruj na dashboard
+  if (session) {
+    redirect('/dashboard');
   }
-`;
-
-const LoginPage = () => {
-  return (
-    <LoginContainer>
-      <StyledCard>
-        <Title level={2} style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          Welcome to MotoTrail
-        </Title>
-        <Paragraph style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          Discover exciting motorcycle routes in Poland
-        </Paragraph>
-        <LoginForm />
-      </StyledCard>
-    </LoginContainer>
-  );
-};
-
-export default LoginPage;
+  
+  // Renderuj komponent kliencki jeśli użytkownik nie jest zalogowany
+  return <LoginClient />;
+}
