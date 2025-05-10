@@ -5,18 +5,23 @@ import {
   Typography,
   Card,
   Button,
-  Collapse,
   Divider,
-  Space,
-  Tag,
   Descriptions,
   message,
+  Tabs,
 } from 'antd';
 import { SaveOutlined, CopyOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
+import dynamic from 'next/dynamic';
+import { RoutePoint } from '@/lib/ai/openrouter-service';
 
-const { Title, Paragraph, Text } = Typography;
-const { Panel } = Collapse;
+const { Title, Paragraph } = Typography;
+const { TabPane } = Tabs;
+
+const RouteMap = dynamic(() => import('./RouteMap'), {
+  ssr: false,
+  loading: () => <div style={{ height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Loading map...</div>,
+});
 
 const StyledCard = styled(Card)`
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -41,7 +46,7 @@ interface RouteResultProps {
   result: {
     title: string;
     summary: string;
-    routePoints: any;
+    routePoints: RoutePoint[];
     inputParams: {
       startPoint?: string;
       routePriority?: string;
@@ -137,8 +142,11 @@ const RouteResult: React.FC<RouteResultProps> = ({
         <Title level={4}>Route Points</Title>
         <Paragraph>Detailed waypoints for your motorcycle journey:</Paragraph>
 
-        <Collapse defaultActiveKey={['1']}>
-          <Panel header="Route JSON Data" key="1">
+        <Tabs defaultActiveKey="map">
+          <TabPane tab={<span><EnvironmentOutlined />Map</span>} key="map">
+            <RouteMap routePoints={result.routePoints} />
+          </TabPane>
+          <TabPane tab="Route JSON Data" key="json">
             <div style={{ position: 'relative' }}>
               <CopyButton
                 icon={<CopyOutlined />}
@@ -150,8 +158,8 @@ const RouteResult: React.FC<RouteResultProps> = ({
                 <pre style={{ margin: 0 }}>{JSON.stringify(result.routePoints, null, 2)}</pre>
               </RoutePointsContainer>
             </div>
-          </Panel>
-        </Collapse>
+          </TabPane>
+        </Tabs>
 
         {!viewOnly && onSave && (
           <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
