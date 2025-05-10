@@ -12,12 +12,10 @@ env:
   NEXT_PUBLIC_OPENROUTER_API_URL: 'https://openrouter.ai/api/v1/chat/completions'
   NEXT_PUBLIC_OPENROUTER_MODEL: 'deepseek/deepseek-prover-v2:free'
   NEXT_PUBLIC_OPENROUTER_APP_URL: ${{ secrets.NEXT_PUBLIC_OPENROUTER_APP_URL }}
-  AZURE_WEBAPP_NAME: '10xBikeTravels'
-  AZURE_WEBAPP_PACKAGE_PATH: '.next'
   NODE_VERSION: '22.x'
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -46,11 +44,3 @@ jobs:
 
       - name: Build application
         run: npm run build
-
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}

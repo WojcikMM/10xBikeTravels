@@ -164,6 +164,17 @@ export class OpenRouterService {
     return prompt;
   }
 
+  private parseCleanJson(content: string): any {
+    const cleanedContent = content.trim().replace(/^```json\s*|```$/g, '');
+
+    try {
+      return JSON.parse(cleanedContent);
+    } catch (error) {
+      console.error('Error parsing JSON:', error);
+      return null;
+    }
+  }
+
   private async callOpenRouter(prompt: string, retryCount = 0): Promise<RouteGenerationResult> {
     try {
       const response = await fetch(this.apiUrl, {
@@ -209,7 +220,7 @@ export class OpenRouterService {
 
       try {
         // Parse the JSON response
-        const parsedContent = JSON.parse(content);
+        const parsedContent = this.parseCleanJson(content);
 
         // Validate the response structure
         const validatedResult = RouteGenerationResultSchema.parse(parsedContent);
