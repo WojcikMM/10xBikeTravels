@@ -6,6 +6,10 @@
 [![Test Coverage](https://img.shields.io/badge/coverage-81%25-yellowgreen)]()
 [![License](https://img.shields.io/badge/license-MIT-blue)]()
 
+## 🌐 Demo
+
+The application is available online at [https://bike-travels.vercel.app/](https://bike-travels.vercel.app/)
+
 ## 🚀 Features
 
 - **Personalized Route Generation**: Generate motorcycle routes based on your preferences, including scenic views, twisty roads, or avoiding highways
@@ -17,6 +21,7 @@
 
 ## 📋 Table of Contents
 
+- [Demo](#-demo)
 - [Installation](#-installation)
 - [Usage](#-usage)
 - [Testing](#-testing)
@@ -159,6 +164,7 @@ npm run test:coverage
 - **GitHub Actions**: CI/CD pipelines
 - **Docker**: Containerization
 - **DigitalOcean**: Cloud hosting
+- **Vercel**: Application hosting platform
 
 ## 👥 Contributing
 
