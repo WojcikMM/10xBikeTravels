@@ -1,4 +1,4 @@
-// @eslint-disable-file
+/* eslint-disable no-unused-vars */
 // This file is used to define the database schema for Supabase
 // It is used by the Supabase client to generate types for the database
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
@@ -63,16 +63,13 @@ export interface Database {
       };
     };
     Views: {
-      // @eslint-disable-next-line no-unused-vars
-      [_ in never]: never;
+      [_: string]: never;
     };
     Functions: {
-      // @eslint-disable-next-line no-unused-vars
-      [_ in never]: never;
+      [_: string]: never;
     };
     Enums: {
-      // @eslint-disable-next-line no-unused-vars
-      [_ in never]: never;
+      [_: string]: never;
     };
   };
 }

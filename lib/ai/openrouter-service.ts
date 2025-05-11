@@ -44,6 +44,7 @@ const RouteGenerationResultSchema = z.object({
 export class OpenRouterError extends Error {
   constructor(
     message: string,
+    // eslint-disable-next-line no-unused-vars
     public code?: string
   ) {
     super(message);
