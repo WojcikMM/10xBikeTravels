@@ -1,22 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
+import { Typography, Card, Button, Divider, Descriptions, message, Tabs, Tooltip } from 'antd';
 import {
-  Typography,
-  Card,
-  Button,
-  Divider,
-  Descriptions,
-  message,
-  Tabs,
-  Tooltip,
-} from 'antd';
-import { 
-  SaveOutlined, 
-  CopyOutlined, 
-  EnvironmentOutlined, 
+  SaveOutlined,
+  CopyOutlined,
+  EnvironmentOutlined,
   GoogleOutlined,
-  ShareAltOutlined
+  ShareAltOutlined,
 } from '@ant-design/icons';
 import styled from 'styled-components';
 import dynamic from 'next/dynamic';
@@ -29,7 +20,12 @@ const { TabPane } = Tabs;
 // Dynamically import the map component to prevent SSR issues
 const RouteMap = dynamic(() => import('./RouteMap'), {
   ssr: false,
-  loading: () => <div style={{ height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Loading map...</div>,
+  loading: () => (
+    <div
+      style={{ height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      Loading map...
+    </div>
+  ),
 });
 
 const StyledCard = styled(Card)`
@@ -102,12 +98,12 @@ const RouteResult: React.FC<RouteResultProps> = ({
   const handleOpenInGoogleMaps = () => {
     try {
       const googleMapsUrl = createGoogleMapsUrl(result.routePoints);
-      
+
       if (!googleMapsUrl) {
         message.error('Unable to create Google Maps URL. Route may be invalid.');
         return;
       }
-      
+
       // Open Google Maps in a new tab
       window.open(googleMapsUrl, '_blank');
     } catch (error) {
@@ -119,19 +115,20 @@ const RouteResult: React.FC<RouteResultProps> = ({
   const handleShareRoute = () => {
     try {
       const googleMapsUrl = createGoogleMapsUrl(result.routePoints);
-      
+
       if (navigator.share && googleMapsUrl) {
-        navigator.share({
-          title: result.title,
-          text: result.summary,
-          url: googleMapsUrl,
-        })
-        .then(() => message.success('Route shared successfully'))
-        .catch((error) => {
-          console.error('Error sharing route:', error);
-          // Fall back to copying URL if sharing fails
-          copyUrlToClipboard(googleMapsUrl);
-        });
+        navigator
+          .share({
+            title: result.title,
+            text: result.summary,
+            url: googleMapsUrl,
+          })
+          .then(() => message.success('Route shared successfully'))
+          .catch((error) => {
+            console.error('Error sharing route:', error);
+            // Fall back to copying URL if sharing fails
+            copyUrlToClipboard(googleMapsUrl);
+          });
       } else if (googleMapsUrl) {
         // Fallback for browsers without Web Share API
         copyUrlToClipboard(googleMapsUrl);
@@ -145,7 +142,8 @@ const RouteResult: React.FC<RouteResultProps> = ({
   };
 
   const copyUrlToClipboard = (url: string) => {
-    navigator.clipboard.writeText(url)
+    navigator.clipboard
+      .writeText(url)
       .then(() => message.success('Route URL copied to clipboard'))
       .catch(() => message.error('Failed to copy URL to clipboard'));
   };
@@ -206,21 +204,13 @@ const RouteResult: React.FC<RouteResultProps> = ({
 
         <ActionButtonsContainer>
           <Tooltip title="Open in Google Maps">
-            <Button 
-              icon={<GoogleOutlined />} 
-              onClick={handleOpenInGoogleMaps}
-              type="default"
-            >
+            <Button icon={<GoogleOutlined />} onClick={handleOpenInGoogleMaps} type="default">
               Open in Google Maps
             </Button>
           </Tooltip>
 
           <Tooltip title="Share Route">
-            <Button 
-              icon={<ShareAltOutlined />} 
-              onClick={handleShareRoute}
-              type="default"
-            >
+            <Button icon={<ShareAltOutlined />} onClick={handleShareRoute} type="default">
               Share Route
             </Button>
           </Tooltip>
@@ -232,7 +222,14 @@ const RouteResult: React.FC<RouteResultProps> = ({
         <Paragraph>Detailed waypoints for your motorcycle journey:</Paragraph>
 
         <Tabs defaultActiveKey="map">
-          <TabPane tab={<span><EnvironmentOutlined />Map</span>} key="map">
+          <TabPane
+            tab={
+              <span>
+                <EnvironmentOutlined />
+                Map
+              </span>
+            }
+            key="map">
             <RouteMap routePoints={result.routePoints} />
           </TabPane>
           <TabPane tab="Route JSON Data" key="json">
