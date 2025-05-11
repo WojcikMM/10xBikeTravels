@@ -111,7 +111,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider
-        collapsible
         collapsed={collapsed}
         onCollapse={setCollapsed}
         breakpoint="lg"
